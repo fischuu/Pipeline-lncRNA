@@ -1,0 +1,48 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+
+description: snakemake configuration file
+
+type: object
+
+properties:
+  project-folder:
+    type: string
+
+  species:
+    type: string
+
+  samples:
+    type: string
+
+  ref:
+    type: string
+
+  params:
+    type: object
+    properties:
+      fastqc:
+        type: string
+      star: 
+        type: string
+      feelnc:
+        type: string
+      stringtie:
+        type: object
+        properties:
+          tpm:
+            type: string
+      rsem:
+        type: string
+    required:
+      - fastqc
+      - star
+      - feelnc
+      - stringtie
+      - rsem
+
+required:
+  - project-folder
+  - species
+  - samples
+  - ref
+  - params

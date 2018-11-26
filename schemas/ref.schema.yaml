@@ -1,0 +1,25 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+
+description: an entry in the reference sheet
+
+type: object
+
+properties:
+  species:
+    type: string
+    description: species name
+  genome:
+    type: string
+    description: absolute path to genome fasta file
+  index:
+    type: string
+    description: absolute path to genome index files
+  annot:
+    type: string
+    description: absolute path to gtf annotation file
+
+required:
+  - species
+  - genome
+  - index
+  - annot

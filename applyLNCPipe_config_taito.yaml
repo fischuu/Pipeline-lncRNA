@@ -1,0 +1,20 @@
+# absolute path to the project folder
+project-folder: /wrk/fischerd/FAANG_lncRNA
+
+# species name
+species: gallus_gallus
+
+# absolute path to sample sheet (list of sample identifiers)
+samples: /wrk/fischerd/FAANG_lncRNA/gallus_gallus/samples
+
+# absolute path to list of reference files (header of tsv: species, genome, index, annot)
+ref: /wrk/fischerd/FAANG_lncRNA/pipeline/species_resources.tsv
+
+params:
+  fastqc: ""
+  star: ""
+  feelnc: ""
+  stringtie:
+    # Define here the tpm threshold for the merging step
+    tpm: "1"
+  rsem: ""

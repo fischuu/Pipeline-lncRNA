@@ -1,0 +1,31 @@
+__default__:
+    time: 00:30:00
+    job-name:  mysnakemake
+    ntasks: 1
+    cpus-per-task: 1
+    mem-per-cpu: 4000
+    partition: serial
+    working-directory: /wrk/fischerd/FAANG_lncRNA/gallus_gallus/logs
+
+quality_control_fastqc:
+    job-name: fastqc
+    time: 00:30:00
+    cpus-per-task: 16
+
+star_map:
+    job-name: star
+    time: 06:00:00
+    cpus-per-task: 16
+
+transcriptome_assembly_stringtie:
+    job-name: stringtie
+    time: 01:00:00
+    cpus-per-task: 16
+
+stringmerge_merge:
+    job-name: stringmerge
+    cpus-per-task: 16
+
+classify_ncrna_feelnc:
+    job-name: feelnc
+    cpus-per-task: 16
