@@ -15,58 +15,80 @@ if [[ ! -f $enaAccList ]]; then echo $enaAccList ': File not found, aborting.' ;
 mkdir -p $dataDir
 cd $dataDir
 pwd
-
-# The way via stdin as it was originally does not work, hence I read in now first the
-# whole file as an array and then loop over it
 IFS=$'\n' read -d '' -r -a StringArray < $enaAccList
 
 ## For each line in accession list check if md5 (for fastq) exists/matches or download
-# while read LINE; do # This does not work for some reasons on CSC servers
+#cat $enaAccList | while read LINE; do 
 for LINE in ${StringArray[@]}; do
-	echo $LINE
+        echo $LINE
 
-	## Get run accession
-	runAcc=$(echo $LINE | awk '{print $1}')
-	wget "https://www.ebi.ac.uk/ena/data/warehouse/filereport?accession=${runAcc}&result=read_run&fields=run_accession,fastq_ftp,fastq_md5" -O ${runAcc}.filereport
-
-
-	## Write md5 from filereport
-	echo -n $(cat ${runAcc}.filereport | tail -1 | awk '{print $3}' | awk -F ";" '{print $1}') > $runAcc.md5
-	echo -e "  $(cat ${runAcc}.filereport | tail -1 | awk '{print $2}' | basename $(awk -F ";" '{print $1}'))" >> $runAcc.md5
-	echo -n $(cat ${runAcc}.filereport | tail -1 | awk '{print $3}' | awk -F ";" '{print $2}') >> $runAcc.md5
-	echo -e "  $(cat ${runAcc}.filereport | tail -1 | awk '{print $2}' | basename $(awk -F ";" '{print $2}'))" >> $runAcc.md5
+        ## Get run accession
+        runAcc=$(echo $LINE | awk '{print $1}')
+        wget "https://www.ebi.ac.uk/ena/data/warehouse/filereport?accession=${runAcc}&result=read_run&fields=run_accession,fastq_ftp,fastq_md5" -O ${runAcc}.filereport
 
 
-	## Check if md5 matches/exists, otherwise download fastq, do md5 and check
-	## read1
-	if grep -q $(cat ${runAcc}_1.fastq.gz.md5 | awk '{print $1}') $runAcc.md5; then 
-		echo OK
-	else 
-		echo NOT FOUND
-		echo '[WGET]'
-		wget ftp://$(cat ${runAcc}.filereport | tail -1 | awk '{print $2}' | awk -F ";" '{print $1}') 
-		md5sum ${runAcc}_1.fastq.gz > ${runAcc}_1.fastq.gz.md5
-		if grep -q $(cat ${runAcc}_1.fastq.gz.md5 | awk '{print $1}') $runAcc.md5; then 
-			echo OK
-		else
-			echo '[FAIL - Check downloaded fastq-1 file and md5sum]'	
-		fi	
-	fi	
+        ## Write md5 from filereport
+        echo -n $(cat ${runAcc}.filereport | tail -1 | awk '{print $3}' | awk -F ";" '{print $1}') > $runAcc.md5
+        echo -e "  $(cat ${runAcc}.filereport | tail -1 | awk '{print $2}' | basename $(awk -F ";" '{print $1}'))" >> $runAcc.md5
+        echo -n $(cat ${runAcc}.filereport | tail -1 | awk '{print $3}' | awk -F ";" '{print $2}') >> $runAcc.md5
+        echo -e "  $(cat ${runAcc}.filereport | tail -1 | awk '{print $2}' | basename $(awk -F ";" '{print $2}'))" >> $runAcc.md5
+
+        ## Check if md5 matches/exists, otherwise download fastq, do md5 and check
+        ## read1
+
+        if [ -e "${runAcc}_1.fastq.gz.md5" ]; then
+           fileFound=true;
+           echo FILE FOUND
+           if grep -q "$(cat ${runAcc}_1.fastq.gz.md5 | awk '{print $1}')" $runAcc.md5; then
+                echo MD5 SUM OK
+                MD5OKAY=true;
+           fi
+        fi
+
+        if [ "$fileFound" = true ] && [ "$MD5OKAY" = true ]; then
+           echo NOTHING TO BE DONE
+
+        else
+           fileFound=false
+           MD5OKAY=false
+           echo NOT FOUND
+           echo '[WGET]'
+           wget ftp://$(cat ${runAcc}.filereport | tail -1 | awk '{print $2}' | awk -F ";" '{print $1}')
+           md5sum ${runAcc}_1.fastq.gz > ${runAcc}_1.fastq.gz.md5
+           if grep -q $(cat ${runAcc}_1.fastq.gz.md5 | awk '{print $1}') $runAcc.md5; then
+                echo OK
+           else
+                echo '[FAIL - Check downloaded fastq-1 file and md5sum]'        
+           fi
+        fi
+	
 
 	## read2
-	if grep -q $(cat ${runAcc}_2.fastq.gz.md5 | awk '{print $1}') $runAcc.md5; then 
-		echo OK
-	else 
-		echo NOT FOUND
-		echo '[WGET]'
-		wget ftp://$(cat ${runAcc}.filereport | tail -1 | awk '{print $2}' | awk -F ";" '{print $2}') 
-		md5sum ${runAcc}_2.fastq.gz > ${runAcc}_2.fastq.gz.md5
-		if grep -q $(cat ${runAcc}_2.fastq.gz.md5 | awk '{print $1}') $runAcc.md5; then 
-			echo OK
-		else
-			echo '[FAIL - Check downloaded fastq-2 file and md5sum]'	
-		fi	
-	fi
+        if [ -e "${runAcc}_2.fastq.gz.md5" ]; then
+           fileFound=true;
+           echo FILE FOUND
+           if grep -q "$(cat ${runAcc}_2.fastq.gz.md5 | awk '{print $1}')" $runAcc.md5; then
+                echo MD5 SUM OK
+                MD5OKAY=true;
+           fi
+        fi
+
+        if [ "$fileFound" = true ] && [ "$MD5OKAY" = true ]; then
+           echo NOTHING TO BE DONE
+
+        else
+                fileFound=false
+                MD5OKAY=false
+                echo NOT FOUND
+                echo '[WGET]'
+                wget ftp://$(cat ${runAcc}.filereport | tail -1 | awk '{print $2}' | awk -F ";" '{print $2}')
+                md5sum ${runAcc}_2.fastq.gz > ${runAcc}_2.fastq.gz.md5
+                if grep -q $(cat ${runAcc}_2.fastq.gz.md5 | awk '{print $1}') $runAcc.md5; then
+                        echo OK
+                else
+                        echo '[FAIL - Check downloaded fastq-2 file and md5sum]'        
+                fi
+        fi
 
 done  # < $enaAccList  # This had to be removed so that it works on CSC
 
