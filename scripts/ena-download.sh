@@ -16,9 +16,13 @@ mkdir -p $dataDir
 cd $dataDir
 pwd
 
+# The way via stdin as it was originally does not work, hence I read in now first the
+# whole file as an array and then loop over it
+IFS=$'\n' read -d '' -r -a StringArray < $enaAccList
 
 ## For each line in accession list check if md5 (for fastq) exists/matches or download
-while read LINE; do 
+# while read LINE; do # This does not work for some reasons on CSC servers
+for LINE in ${StringArray[@]}; do
 	echo $LINE
 
 	## Get run accession
@@ -64,6 +68,6 @@ while read LINE; do
 		fi	
 	fi
 
-done < $enaAccList 
+done  # < $enaAccList  # This had to be removed so that it works on CSC
 
 cd ${currentDir}
