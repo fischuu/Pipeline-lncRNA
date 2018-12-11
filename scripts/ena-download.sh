@@ -35,6 +35,8 @@ for LINE in ${StringArray[@]}; do
 
         ## Check if md5 matches/exists, otherwise download fastq, do md5 and check
         ## read1
+        fileFound=false
+        MD5OKAY=false
 
         if [ -e "${runAcc}_1.fastq.gz.md5" ]; then
            fileFound=true;
@@ -64,6 +66,9 @@ for LINE in ${StringArray[@]}; do
 	
 
 	## read2
+        fileFound=false
+        MD5OKAY=false
+
         if [ -e "${runAcc}_2.fastq.gz.md5" ]; then
            fileFound=true;
            echo FILE FOUND
