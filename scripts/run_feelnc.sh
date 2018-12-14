@@ -8,16 +8,16 @@
 # 5. A name for the analysis
 
 
-export FEELNCPATH=/home/users/fischer/bin/FEELnc
-export PERL5LIB=${FEELNCPATH}/lib/:$PERL5LIB
+#export FEELNCPATH=/home/users/fischer/bin/FEELnc
+#export PERL5LIB=${FEELNCPATH}/lib/:$PERL5LIB
 
-export PATH=$PATH:${FEELNCPATH}/scripts/
-export PATH=$PATH:${FEELNCPATH}/utils/
+#export PATH=$PATH:${FEELNCPATH}/scripts/
+#export PATH=$PATH:${FEELNCPATH}/utils/
 
 # for LINUX
 #----------
-export PATH=$PATH:${FEELNCPATH}/bin/LINUX/
-FEELloc="/home/users/fischer/bin/FEELnc/scripts"
+#export PATH=$PATH:${FEELNCPATH}/bin/LINUX/
+#FEELloc="/home/users/fischer/bin/FEELnc/scripts"
 
 
 echo "I am the applyFEELnc.sh script version";
@@ -37,7 +37,7 @@ afterCodpot="$PROJECTNAME.codpot"
 afterClass="$OUTPUTFOLDER/classifier/$PROJECTNAME.classifier.txt"
 afterClassLog="$OUTPUTFOLDER/classifier/$PROJECTNAME.classifier.log"
 
-echo "GTF file              :" $CANDIDATED;
+echo "GTF file              :" $CANDIDATES;
 echo "Annotation            :" $ANNOTATION;
 echo "Genome                :" $GENOME;
 echo "Output folder         :" $OUTPUTFOLDER;
@@ -48,7 +48,7 @@ echo "Start the filter module..."
 
 if [ ! -f $afterFilter ]; then
   mkdir -p $OUTPUTFOLDER/filter/;
-  $FEELloc/FEELnc_filter.pl --infile=$CANDIDATES \
+  FEELnc_filter.pl --infile=$CANDIDATES \
                             --mRNAfile=$ANNOTATION \
                             --biotype=transcript_biotype=protein_coding \
                             --monoex=-1 \
@@ -64,7 +64,7 @@ echo "Start the coding potential module..."
 if [ ! -f $OUTPUTFOLDER/codpot/$afterCodpot ]; then
 
   mkdir -p $OUTPUTFOLDER/codpot/;
-  $FEELloc/FEELnc_codpot.pl --infile=$afterFilter \
+  FEELnc_codpot.pl --infile=$afterFilter \
                             --mRNAfile=$ANNOTATION \
                             --genome=$GENOME \
                             -b transcript_biotype=protein_coding \
@@ -81,7 +81,7 @@ echo "Start the classifier module:"
 if [ ! -f $afterClass ]; then
 
   mkdir -p $OUTPUTFOLDER/classifier/;
-  $FEELloc/FEELnc_classifier.pl --lncrna=$OUTPUTFOLDER/codpot/$afterCodpot.lncRNA.gtf \
+  FEELnc_classifier.pl --lncrna=$OUTPUTFOLDER/codpot/$afterCodpot.lncRNA.gtf \
                                 --mrna=$ANNOTATION > $afterClass
 echo "... done!"
 
