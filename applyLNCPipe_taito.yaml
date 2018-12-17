@@ -12,6 +12,11 @@ buildsalmonIndex_salmon:
     time: 00:30:00
     cpus-per-task: 16
 
+mapping_salmon:
+    job-name: salmon_quant
+    time: 03:00:00
+    cpus-per-task: 16
+    
 quality_control_fastqc:
     job-name: fastqc
     time: 00:30:00

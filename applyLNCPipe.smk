@@ -12,6 +12,7 @@ configfile: "applyLNCPipe_config_taito.yaml"
 validate(config, schema="schemas/config.schema.yaml")
 
 samples = pd.read_table(config["samples"], header=None)[0].tolist()
+samplesStranded = list()
 
 references = pd.read_table(config["ref"]).set_index("species", drop=False)
 validate(references, schema="schemas/ref.schema.yaml")
@@ -21,7 +22,7 @@ validate(references, schema="schemas/ref.schema.yaml")
 
 rule all:
     input:
-        expand("%s/%s/SALMON/{samples}" % (config["project-folder"], config["species"]), samples=samples),
+        expand("%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]), samples=samples),
         "%s/%s/FEELnc/classifier/feelnc_%s.classifier.txt" % (config["project-folder"], config["species"], config["species"]),
         expand("%s/%s/FASTQC/{samples}" % (config["project-folder"], config["species"]), samples=samples)
        
@@ -43,7 +44,6 @@ report: "report/workflow.rst"
 include: "rules/build_salmonIndex_salmon.smk"
 include: "rules/control_quality.smk"
 include: "rules/mapping_salmon.smk"
-#include: "rules/extract_strandedness_info_bash.smk"
 include: "rules/map_reads.smk"
 include: "rules/assemble_transcripts.smk"
 include: "rules/compose_merge.smk"

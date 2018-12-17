@@ -5,7 +5,7 @@ rule compose_merge:
     collect gtf files of all samples in one text file
     """
     input:
-       expand("%s/%s/Stringtie/{sample}.stringtie.gtf" % (config["project-folder"], config["species"]), sample=samples)
+       expand("%s/%s/Stringtie/{sample}.stringtie.gtf" % (config["project-folder"], config["species"]), sample=samplesStranded)
     output:
        txt="%s/%s/Stringtie/stringtie_gtfs.txt" % (config["project-folder"], config["species"])
     run:

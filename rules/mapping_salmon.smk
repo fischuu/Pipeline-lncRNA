@@ -8,10 +8,10 @@ rule mapping_salmon:
         fastq1="%s/%s/FASTQ/{samples}_1.fastq.gz" % (config["project-folder"], config["species"]),
         fastq2="%s/%s/FASTQ/{samples}_2.fastq.gz" % (config["project-folder"], config["species"])
     output:
-        directory("%s/%s/SALMON/{samples}" % (config["project-folder"], config["species"])) 
+        "%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]) 
     params:
-        species=config["species"],
-        cdna=references.loc[config["species"],"cdna"]
+        cdna=references.loc[config["species"],"cdna"],
+        outdir="%s/%s/SALMON/{samples}" % (config["project-folder"], config["species"])
     log:
         "%s/%s/logs/SALMON/salmonMapping_{samples}.log" % (config["project-folder"], config["species"])
     benchmark:
@@ -19,8 +19,6 @@ rule mapping_salmon:
     threads: 16
     shell:"""
         module load salmon/0.12.0
-        
-        mkdir -p {output}
 
-        salmon quant -i {params.cdna}/salmon_index -p {threads} -l A -1 {input.fastq1} -2 {input.fastq2} -o {output} 2> {log};
+        salmon quant -i {params.cdna}/salmon_index -p {threads} -l A -1 {input.fastq1} -2 {input.fastq2} -o {params.outdir} 2> {log};
     """
