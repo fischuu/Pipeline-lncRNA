@@ -21,8 +21,14 @@ validate(references, schema="schemas/ref.schema.yaml")
 
 rule all:
     input:
+      # The output from the SALMON part
+      ####################################
         expand("%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]), samples=samples),
+      # The output from the FEELnc part
+      ####################################
         "%s/%s/FEELnc/classifier/feelnc_%s.classifier.txt" % (config["project-folder"], config["species"], config["species"]),
+      # The quality checks
+      ####################################
         expand("%s/%s/FASTQC/{samples}" % (config["project-folder"], config["species"]), samples=samples)
        
 rule allWOQC:
@@ -40,6 +46,9 @@ report: "report/workflow.rst"
 
 ##### load rules #####
 
+#include: "rules/downloadFASTQ_bash.smk"
+#include: "rules/build_STARIndex_star.smk"
+#include: "rules/compose_samples_bash.smk"
 include: "rules/build_salmonIndex_salmon.smk"
 include: "rules/control_quality.smk"
 include: "rules/mapping_salmon.smk"

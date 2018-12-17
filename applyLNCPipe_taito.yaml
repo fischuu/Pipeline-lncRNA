@@ -5,7 +5,7 @@ __default__:
     cpus-per-task: 1
     mem-per-cpu: 4000
     partition: serial
-    working-directory: /proj/project_2000968/FAANG_lncRNA/gallus_gallus/logs
+    working-directory: /proj/project_2000968/FAANG_lncRNA/bos_taurus/logs
 
 buildsalmonIndex_salmon:
     job-name: salmon

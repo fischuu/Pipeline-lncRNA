@@ -31,6 +31,5 @@ rule transcriptome_assembly_stringtie:
         elif [ $lib_type == \"IU\" ];
         then
 	         stringtie {input.bam} -p {threads} -G {input.annotation} -v -o {output} 2> {log};
-	         samples.remove(wildcard.samples);
         fi
     """
