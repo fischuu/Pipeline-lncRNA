@@ -12,7 +12,6 @@ configfile: "applyLNCPipe_config_taito.yaml"
 validate(config, schema="schemas/config.schema.yaml")
 
 samples = pd.read_table(config["samples"], header=None)[0].tolist()
-samplesStranded = list()
 
 references = pd.read_table(config["ref"]).set_index("species", drop=False)
 validate(references, schema="schemas/ref.schema.yaml")

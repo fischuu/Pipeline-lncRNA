@@ -25,15 +25,12 @@ rule transcriptome_assembly_stringtie:
         if [ $lib_type == \"ISR\" ];
         then
       	   stringtie {input.bam} -p {threads} --rf -G {input.annotation} -v -o {output} 2> {log};
-      	   samplesStranded.append(wildcard.samples);
-      	   
         elif [ $lib_type == \"ISF\" ];
         then
 	         stringtie {input.bam} -p {threads} --fr -G {input.annotation} -v -o {output} 2> {log};
-	         samplesStranded.append(wildcard.samples);
-	         
         elif [ $lib_type == \"IU\" ];
         then
 	         stringtie {input.bam} -p {threads} -G {input.annotation} -v -o {output} 2> {log};
+	         samples.remove(wildcard.samples);
         fi
     """
