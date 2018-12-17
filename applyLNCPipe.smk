@@ -21,6 +21,7 @@ validate(references, schema="schemas/ref.schema.yaml")
 
 rule all:
     input:
+        "%s/salmon_index/hash.bin" % (references.loc[config["species"],"cdna"]) ,
         "%s/%s/FEELnc/classifier/feelnc_%s.classifier.txt" % (config["project-folder"], config["species"], config["species"]),
         expand("%s/%s/FASTQC/{samples}" % (config["project-folder"], config["species"]), samples=samples)
        
@@ -39,8 +40,10 @@ report: "report/workflow.rst"
 
 ##### load rules #####
 
+include: "rules/build_salmonIndex_salmon.smk"
 include: "rules/control_quality.smk"
-#include: "rules/check_strandedness.smk"
+#include: "rules/map_data_for_strandedness_salmon.smk"
+#include: "rules/extract_strandedness_info_bash.smk"
 include: "rules/map_reads.smk"
 include: "rules/assemble_transcripts.smk"
 include: "rules/compose_merge.smk"

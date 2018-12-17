@@ -7,6 +7,11 @@ __default__:
     partition: serial
     working-directory: /proj/project_2000968/FAANG_lncRNA/gallus_gallus/logs
 
+buildsalmonIndex_salmon:
+    job-name: salmon
+    time: 00:30:00
+    cpus-per-task: 16
+
 quality_control_fastqc:
     job-name: fastqc
     time: 00:30:00

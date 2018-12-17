@@ -17,6 +17,9 @@ properties:
   annot:
     type: string
     description: absolute path to gtf annotation file
+  cdna:
+    type: string
+    description: absolute path to the salmon index
 
 required:
   - species
