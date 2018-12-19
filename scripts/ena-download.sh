@@ -19,7 +19,9 @@ IFS=$'\n' read -d '' -r -a StringArray < $enaAccList
 
 ## For each line in accession list check if md5 (for fastq) exists/matches or download
 #cat $enaAccList | while read LINE; do 
-for LINE in ${StringArray[@]}; do
+#for LINE in ${StringArray[@]}; do
+parallelDownload () {
+    local LINE=$1
         echo $LINE
 
         ## Get run accession
@@ -94,8 +96,15 @@ for LINE in ${StringArray[@]}; do
                         echo '[FAIL - Check downloaded fastq-2 file and md5sum]'        
                 fi
         fi
+}
 
-done  # < $enaAccList  # This had to be removed so that it works on CSC
+N=4
+(
+for LINE in ${StringArray[@]}; do 
+   ((i=i%N)); ((i++==0)) && wait
+   parallelDownload "$LINE" & 
+done
+)
 
 touch downloadReady
 
