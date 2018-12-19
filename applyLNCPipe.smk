@@ -39,6 +39,9 @@ rule qc:
     input:
         expand("%s/%s/FASTQC/{samples}" % (config["project-folder"], config["species"]), samples=samples)
 
+rule dataDownload:
+
+
 ### setup report #####
 
 report: "report/workflow.rst"

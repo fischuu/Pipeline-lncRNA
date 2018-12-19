@@ -7,7 +7,8 @@ rule downloadFASTQ_bash:
     params:
         ids=references.loc[config["species"],"ids"]
     output:
-        directory("%s/%s/FASTQ" % (config["project-folder"], config["species"]))
+        directory("%s/%s/FASTQ" % (config["project-folder"], config["species"])),
+        note="%s/%s/FASTQ/downloadReady" % (config["project-folder"], config["species"])
     log:
         "%s/%s/logs/FASTQdownload/FASTQdownload.log" % (config["project-folder"], config["species"])
     benchmark:
