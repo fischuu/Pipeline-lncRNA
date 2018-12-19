@@ -8,9 +8,7 @@ rule star_map:
         index=references.loc[config["species"],"index"],
         annotation=references.loc[config["species"],"annot"],
         fastq=["%s/%s/FASTQ/{samples}_1.fastq.gz" % (config["project-folder"], config["species"]),
-               "%s/%s/FASTQ/{samples}_2.fastq.gz" % (config["project-folder"], config["species"])],
-        download="%s/%s/FASTQ/downloadReady" % (config["project-folder"], config["species"])
-
+               "%s/%s/FASTQ/{samples}_2.fastq.gz" % (config["project-folder"], config["species"])]
     output:
         file="%s/%s/BAM/{samples}.bam" % (config["project-folder"], config["species"]),
         dir=directory("%s/%s/BAM/{samples}" % (config["project-folder"], config["species"]))

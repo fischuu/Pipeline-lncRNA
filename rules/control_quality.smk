@@ -6,8 +6,7 @@ rule quality_control_fastqc:
     """
     input:
         ["%s/%s/FASTQ/{samples}_1.fastq.gz" % (config["project-folder"], config["species"]),
-         "%s/%s/FASTQ/{samples}_2.fastq.gz" % (config["project-folder"], config["species"])],
-        download="%s/%s/FASTQ/downloadReady" % (config["project-folder"], config["species"])
+         "%s/%s/FASTQ/{samples}_2.fastq.gz" % (config["project-folder"], config["species"])]
     output:
       #  zip1="%s/%s/FASTQC/{samples}/{samples}_1.zip" % (config["project-folder"], config["species"]),
       #  zip2="%s/%s/FASTQC/{samples}/{samples}_2.zip" % (config["project-folder"], config["species"]),
