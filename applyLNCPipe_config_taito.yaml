@@ -2,10 +2,10 @@
 project-folder: /proj/project_2000968/FAANG_lncRNA
 
 # species name
-species: gallus_gallus
+species: bos_taurus
 
 # absolute path to sample sheet (list of sample identifiers)
-samples: /proj/project_2000968/FAANG_lncRNA/gallus_gallus/samples
+samples: /proj/project_2000968/FAANG_lncRNA/bos_taurus/samples
 
 # absolute path to list of reference files (header of tsv: species, genome, index, annot)
 ref: /proj/project_2000968/FAANG_lncRNA/pipeline/species_resources.tsv

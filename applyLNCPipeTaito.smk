@@ -2,8 +2,7 @@
 #
 #$1 is target file
 
-module load bioconda 2
-source activate snakemake_env
+module load anaconda3
 
 snakemake -s applyLNCPipe.smk \
           -j 800 \
