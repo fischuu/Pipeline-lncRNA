@@ -7,7 +7,8 @@ rule mapping_salmon:
     input:
         fastq1="%s/%s/FASTQ/{samples}_1.fastq.gz" % (config["project-folder"], config["species"]),
         fastq2="%s/%s/FASTQ/{samples}_2.fastq.gz" % (config["project-folder"], config["species"]),
-        index="%s/salmon_index/hash.bin" % (references.loc[config["species"],"cdna"])
+        index="%s/salmon_index/hash.bin" % (references.loc[config["species"],"cdna"]),
+        download="%s/%s/FASTQ/downloadReady" % (config["project-folder"], config["species"])
     output:
         "%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]) 
     params:

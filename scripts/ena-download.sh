@@ -97,4 +97,6 @@ for LINE in ${StringArray[@]}; do
 
 done  # < $enaAccList  # This had to be removed so that it works on CSC
 
+touch downloadReady
+
 cd ${currentDir}

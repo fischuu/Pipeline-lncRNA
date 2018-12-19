@@ -46,7 +46,7 @@ report: "report/workflow.rst"
 
 ##### load rules #####
 
-#include: "rules/downloadFASTQ_bash.smk"
+include: "rules/downloadFASTQ_bash.smk"
 #include: "rules/build_STARIndex_star.smk"
 #include: "rules/compose_samples_bash.smk"
 include: "rules/build_salmonIndex_salmon.smk"
