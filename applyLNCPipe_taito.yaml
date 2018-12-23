@@ -34,7 +34,7 @@ star_map:
 
 transcriptome_assembly_stringtie:
     job-name: stringtie
-    time: 01:00:00
+    time: 03:00:00
     cpus-per-task: 16
 
 stringmerge_merge:
