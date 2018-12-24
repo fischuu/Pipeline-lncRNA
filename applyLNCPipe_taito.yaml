@@ -39,9 +39,10 @@ transcriptome_assembly_stringtie:
 
 stringmerge_merge:
     job-name: stringmerge
+    time: 06:00:00
     cpus-per-task: 16
 
 classify_ncrna_feelnc:
     job-name: feelnc
-    time: 2-00:00:00
+    time: 3-00:00:00
     cpus-per-task: 16
