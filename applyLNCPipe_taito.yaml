@@ -37,7 +37,7 @@ transcriptome_assembly_stringtie:
     time: 1-00:00:00
     cpus-per-task: 16
 
-stringmerge_merge:
+merge_samples:
     job-name: stringmerge
     time: 06:00:00
     cpus-per-task: 16
