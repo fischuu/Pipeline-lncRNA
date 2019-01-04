@@ -19,5 +19,5 @@ rule merge_samples:
     shell:"""
         module load stringtie
 
-        stringtie --merge -G {input.annotation} -F 0 -T {params.tpm} -o {output} {input.gtfs}
+        stringtie --merge -G {input.annotation} -F 0 -T {params.tpm} -o {output} {input.gtfs} 2> {log};
     """
