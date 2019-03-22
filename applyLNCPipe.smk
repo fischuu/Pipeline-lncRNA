@@ -8,7 +8,7 @@ from snakemake.utils import validate, min_version
 
 ##### load config and sample sheets #####
 
-configfile: "applyLNCPipe_config_taito.yaml"
+#configfile: "applyLNCPipe_config_taito.yaml"
 validate(config, schema="schemas/config.schema.yaml")
 
 samples = pd.read_table(config["samples"], header=None)[0].tolist()
