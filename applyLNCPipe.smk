@@ -9,12 +9,12 @@ from snakemake.utils import validate, min_version
 ##### load config and sample sheets #####
 
 #configfile: "applyLNCPipe_config_taito.yaml"
-validate(config, schema="schemas/config.schema.yaml")
+#validate(config, schema="schemas/config.schema.yaml")
 
 samples = pd.read_table(config["samples"], header=None)[0].tolist()
 
 references = pd.read_table(config["ref"], delimiter='\s+', lineterminator='\n').set_index("species", drop=False)
-validate(references, schema="schemas/ref.schema.yaml")
+#validate(references, schema="schemas/ref.schema.yaml")
 
 
 ##### run complete pipeline #####

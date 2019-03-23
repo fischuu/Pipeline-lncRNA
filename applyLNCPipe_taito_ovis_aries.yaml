@@ -1,0 +1,48 @@
+__default__:
+    time: 00:30:00
+    job-name:  mysnakemake
+    ntasks: 1
+    cpus-per-task: 1
+    mem-per-cpu: 4000
+    partition: serial
+    working-directory: /proj/project_2000968/FAANG_lncRNA/ovis_aries/logs
+
+downloadFASTQ_bash:
+    job-name: dl_fastq
+    time: 3-00:00:00
+    cpus-per-task: 1
+    
+buildsalmonIndex_salmon:
+    job-name: salmon
+    time: 00:30:00
+    cpus-per-task: 16
+
+mapping_salmon:
+    job-name: salmon_quant
+    time: 03:00:00
+    cpus-per-task: 16
+    
+quality_control_fastqc:
+    job-name: fastqc
+    time: 00:30:00
+    cpus-per-task: 16
+
+star_map:
+    job-name: star
+    time: 09:00:00
+    cpus-per-task: 12
+
+transcriptome_assembly_stringtie:
+    job-name: stringtie
+    time: 09:00:00
+    cpus-per-task: 12
+
+merge_samples:
+    job-name: stringmerge
+    time: 06:00:00
+    cpus-per-task: 12
+
+classify_ncrna_feelnc:
+    job-name: feelnc
+    time: 3-00:00:00
+    cpus-per-task: 12
