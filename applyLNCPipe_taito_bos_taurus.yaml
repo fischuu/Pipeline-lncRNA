@@ -53,6 +53,6 @@ featureCounts_quantify_reference:
     cpus-per-task: 12
 
 featureCounts_quantify_FEELnc_out:
-    job-name: fc_Ref
+    job-name: fc_FEEL
     time: 01:00:00
     cpus-per-task: 12
