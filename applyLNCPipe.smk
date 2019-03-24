@@ -29,8 +29,11 @@ rule all:
         "%s/%s/FEELnc/classifier/feelnc_%s.classifier.txt" % (config["project-folder"], config["species"], config["species"]),
       # The quality checks
       ####################################
-        expand("%s/%s/FASTQC/{samples}" % (config["project-folder"], config["species"]), samples=samples)
-       
+        expand("%s/%s/FASTQC/{samples}" % (config["project-folder"], config["species"]), samples=samples),
+      # Quantification 
+      ####################################
+        expand("%s/%s/GTF/FEELnc_fc/lncRNA/{samples}_lncRNA_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
+        expand("%s/%s/GTF/Ref_fc/{samples}_ref_fc.txt" % (config["project-folder"], config["species"]), samples=samples)
 rule allWOQC:
     input:
          "%s/%s/FEELnc/classifier/feelnc_%s.classifier.txt" % (config["project-folder"], config["species"], config["species"])
@@ -57,4 +60,5 @@ include: "rules/assemble_transcripts.smk"
 include: "rules/compose_merge.smk"
 include: "rules/merge_samples.smk"
 include: "rules/classify_lncrnas.smk"
-#include: "rules/quantify_expression.smk"
+include: "rules/featureCounts_quantify_FEELnc_out.smk"
+include: "rules/featureCounts_quantify_reference.smk"

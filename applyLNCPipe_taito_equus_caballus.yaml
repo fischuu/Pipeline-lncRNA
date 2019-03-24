@@ -46,3 +46,13 @@ classify_ncrna_feelnc:
     job-name: feelnc
     time: 3-00:00:00
     cpus-per-task: 12
+
+featureCounts_quantify_reference:
+    job-name: fc_Ref
+    time: 01:00:00
+    cpus-per-task: 12
+
+featureCounts_quantify_FEELnc_out:
+    job-name: fc_Ref
+    time: 01:00:00
+    cpus-per-task: 12
