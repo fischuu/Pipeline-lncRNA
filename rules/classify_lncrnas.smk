@@ -9,7 +9,9 @@ rule classify_ncrna_feelnc:
         annotation=references.loc[config["species"],"annot"],
         genome=references.loc[config["species"],"genome"]
     output:
-        "%s/%s/FEELnc/classifier/feelnc_%s.classifier.txt" % (config["project-folder"], config["species"], config["species"])
+        txt="%s/%s/FEELnc/classifier/feelnc_%s.classifier.txt" % (config["project-folder"], config["species"], config["species"]),
+        lncRNA="%s/%s/FEELnc/codpot/feelnc_%s.codpot.lncRNA.gtf" % (config["project-folder"], config["species"], config["species"]),
+        mRNA="%s/%s/FEELnc/codpot/feelnc_%s.codpot.mRNA.gtf" % (config["project-folder"], config["species"], config["species"])
     params:
         name="feelnc_%s" % config["species"],
         dir="%s/%s/FEELnc" % (config["project-folder"], config["species"])
