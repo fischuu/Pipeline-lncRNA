@@ -15,17 +15,17 @@ downloadFASTQ_bash:
 buildsalmonIndex_salmon:
     job-name: salmon
     time: 00:30:00
-    cpus-per-task: 16
+    cpus-per-task: 12
 
 mapping_salmon:
     job-name: salmon_quant
     time: 03:00:00
-    cpus-per-task: 16
+    cpus-per-task: 12
     
 quality_control_fastqc:
     job-name: fastqc
     time: 00:30:00
-    cpus-per-task: 16
+    cpus-per-task: 12
 
 star_map:
     job-name: star
