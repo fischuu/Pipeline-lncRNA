@@ -14,7 +14,7 @@ downloadFASTQ_bash:
     
 buildsalmonIndex_salmon:
     job-name: salmon
-    time: 00:30:00
+    time: 03:00:00
     cpus-per-task: 12
 
 mapping_salmon:
