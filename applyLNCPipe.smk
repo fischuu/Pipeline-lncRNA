@@ -33,7 +33,8 @@ rule all:
       # Quantification 
       ####################################
         expand("%s/%s/GTF/FEELnc_fc/lncRNA/{samples}_lncRNA_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
-        expand("%s/%s/GTF/Ref_fc/{samples}_ref_fc.txt" % (config["project-folder"], config["species"]), samples=samples)
+        expand("%s/%s/GTF/Ref_fc/{samples}_ref_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
+        expand("%s/%s/GTF/Stringmerge_fc/{samples}_stringmerge_fc.txt" % (config["project-folder"], config["species"]), samples=samples)
 rule allWOQC:
     input:
          "%s/%s/FEELnc/classifier/feelnc_%s.classifier.txt" % (config["project-folder"], config["species"], config["species"])
@@ -62,3 +63,4 @@ include: "rules/merge_samples.smk"
 include: "rules/classify_lncrnas.smk"
 include: "rules/featureCounts_quantify_FEELnc_out.smk"
 include: "rules/featureCounts_quantify_reference.smk"
+include: "rules/featureCounts_quantify_stringmerge.smk"

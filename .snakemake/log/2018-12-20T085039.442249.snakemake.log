@@ -1,0 +1,3 @@
+ImportError in line 3 of /home/ejo138/gitPipelines/Pipeline-FAANG-lncRNA/applyLNCPipe.smk:
+cannot import name 'validate'
+  File "/home/ejo138/gitPipelines/Pipeline-FAANG-lncRNA/applyLNCPipe.smk", line 3, in <module>
