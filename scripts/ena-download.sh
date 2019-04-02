@@ -98,13 +98,17 @@ parallelDownload () {
         fi
 }
 
-N=4
-(
+#N=4
+#(
+#for LINE in ${StringArray[@]}; do 
+#   ((i=i%N)); ((i++==0)) && wait
+#   parallelDownload "$LINE" & 
+#done
+#)
+
 for LINE in ${StringArray[@]}; do 
-   ((i=i%N)); ((i++==0)) && wait
-   parallelDownload "$LINE" & 
+   parallelDownload "$LINE";
 done
-)
 
 touch downloadReady
 
