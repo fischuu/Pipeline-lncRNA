@@ -1,0 +1,154 @@
+---
+title: "Within species analysis"
+subtitle: ""
+author: "Daniel Fischer"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      toc_collapsed: true
+    number_sections: false
+    theme: lumen
+    df_print: paged
+    code_folding: show
+---
+      
+# Set the Project specific parameters
+```{r setup, include=FALSE}
+library("knitr")
+library("GenomicTools")
+library("fastqcr")
+options(scipen=999)
+knitr::opts_chunk$set(echo = FALSE,
+                      cache = TRUE,
+                      cache.lazy = FALSE,
+                      dev = c('png', 'pdf'),
+                      fig.align = 'center', fig.height = 5, fig.width = 8.5)
+
+bosFolder <- "/media/ejo138/Fantec6/Projects/FAANG-lncRNA/bos_taurus"
+capraFolder <- "/media/ejo138/Fantec6/Projects/FAANG-lncRNA/"
+equusFolder <- "/media/ejo138/Fantec6/Projects/FAANG-lncRNA/equus_caballus"
+gallusFolder <- "/media/ejo138/Fantec6/Projects/FAANG-lncRNA/gallus_gallus"
+ovisFolder <- "/media/ejo138/Fantec4/Projects/FAANG-lncRNA/ovis_aries"
+susFolder <- "/media/ejo138/Fantec6/Projects/FAANG-lncRNA/sus_scrofa"
+
+bosSamples <- as.vector(as.matrix(read.table(file.path(bosFolder, "samples"), stringsAsFactors = FALSE)))
+#capraSamples <- as.vector(as.matrix(read.table(file.path(bosFolder, "samples"), stringsAsFactors = FALSE)))
+equusSamples <- as.vector(as.matrix(read.table(file.path(equusFolder, "samples"), stringsAsFactors = FALSE)))
+gallusSamples <- as.vector(as.matrix(read.table(file.path(gallusFolder, "samples"), stringsAsFactors = FALSE)))
+ovisSamples <- as.vector(as.matrix(read.table(file.path(bosFolder, "samples"), stringsAsFactors = FALSE)))
+susSamples <- as.vector(as.matrix(read.table(file.path(susFolder, "samples"), stringsAsFactors = FALSE)))
+
+species <- c("Bos T.", "Capra H.", "Equus C.", "Gallus G.", "Ovis A.", "Sus S.")
+```
+
+# Basic statistics
+
+## Quality checks with FastQC
+
+First, we import the quality checks from FastQC
+
+```{r importFastQCReports, echo=FALSE, message=FALSE, warning=FALSE}
+# Import the raw quality information
+importRawReads <- function(dir){
+  qcRawFiles <- list.files(file.path(dir,"FASTQC"), recursive=TRUE, pattern="*.zip")
+  rawReads <- 0
+  for(i in 1:length(qcRawFiles)){
+    tmp <- qc_read(file.path(dir,"FASTQC",qcRawFiles[i]))
+    rawReads[i] <- as.numeric(tmp$basic_statistics$Value[4]) 
+  }
+  names(rawReads) <- sapply(strsplit(sapply(strsplit(qcRawFiles,"/"),"[",2),"_f"),"[",1)
+  
+  rawReads[seq(2,length(rawReads),2)]
+}
+
+bosRawReads <- importRawReads(bosFolder)
+#capraRawReads <- importRawReads(capraFolder)
+equusRawReads <- importRawReads(equusFolder)
+gallusRawReads <- importRawReads(gallusFolder)
+ovisRawReads <- importRawReads(ovisFolder)
+susRawReads <- importRawReads(susFolder)
+```
+
+## Number of raw reads
+
+Visualize the raw reads
+
+```{r boxplotR<awReads}
+boxplot(bosRawReads, xlim=c(0.5,6.5), at=1)
+#boxplot(capraRawReads, at=2, add=TRUE)
+boxplot(equusRawReads, at=3, add=TRUE)
+boxplot(gallusRawReads, at=4, add=TRUE)
+boxplot(ovisRawReads, at=5, add=TRUE)
+boxplot(susRawReads, at=6, add=TRUE)
+axis(1, at=1:6, label=species)
+```
+
+## Mapping statistics
+
+Now some mapping and quantification statistics
+```{r mappingStats}
+# Import the featureCounts statistics
+getFCSummary <- function(dir){
+  fcFiles <- list.files(file.path(dir,"GTF", "Stringmerge_fc"), pattern="*.summary")
+  fcSummary <- list()
+  annotated <- c()
+  unmapped <- c()
+  unmapped.multi <- c()
+  unmapped.ambi <- c()
+  unannotated <- c()
+  
+  for(i in 1:length(fcFiles)){
+    fcSummary[[i]] <- read.table(file.path(dir,"GTF", "Stringmerge_fc", fcFiles[i]), skip=1)
+    annotated[i] <- fcSummary[[i]][1,2]
+    unmapped[i] <- fcSummary[[i]][2,2]
+    unmapped.multi <- fcSummary[[i]][7,2]
+    unannotated[i] <- fcSummary[[i]][10,2]
+    unmapped.ambi <- fcSummary[[i]][12,2]
+  }
+  
+  out <- list(fcSummary, annotated, unmapped, unmapped.multi, unmapped.ambi, unannotated)
+  out
+}
+
+bosMappingStats <- getFCSummary(bosFolder)
+bosMappingStats.sum <- sapply(sapply(bosMappingStats[[1]],"[",2),sum)
+
+#capraMappingStats <- getFCSummary(capraFolder)
+#capraMappingStats.sum <- sapply(sapply(capraMappingStats[[1]],"[",2),sum)
+
+#equusMappingStats <- getFCSummary(equusFolder)
+#equusMappingStats.sum <- sapply(sapply(equusMappingStats[[1]],"[",2),sum)
+
+#gallusMappingStats <- getFCSummary(gallusFolder)
+#gallusMappingStats.sum <- sapply(sapply(gallusMappingStats[[1]],"[",2),sum)
+
+#ovisMappingStats <- getFCSummary(ovisFolder)
+#ovisMappingStats.sum <- sapply(sapply(ovisMappingStats[[1]],"[",2),sum)
+
+susMappingStats <- getFCSummary(susFolder)
+susMappingStats.sum <- sapply(sapply(susMappingStats[[1]],"[",2),sum)
+```
+
+And now visualize the percentages of the different mapping scenarios
+
+```{r}
+par(mfrow=c(2,3))
+createBoxplots <- function(x1, x2, x3){
+  boxplot(x1[[2]]/x2, xlim=c(0.5,5.5), at=1, ylim=c(0,1), main=x3)
+  boxplot(x1[[3]]/x2, at=2, add=TRUE)
+  boxplot(x1[[4]]/x2, at=3, add=TRUE)
+  boxplot(x1[[5]]/x2, at=4, add=TRUE)
+  boxplot(x1[[6]]/x2, at=5, add=TRUE)
+  axis(1, at=1:5, labels=c("Annot.", "Unmapped", "Multim.", "Ambi.", "Unannot."))  
+}
+
+createBoxplots(bosMappingStats, bosMappingStats.sum, "Bos taurus")
+#createBoxplots(capraMappingStats, capraMappingStats.sum, "Capra hircus")
+#createBoxplots(equusMappingStats, equusMappingStats.sum, "Equus caballus")
+#createBoxplots(gallusMappingStats, gallusMappingStats.sum, "Gallus gallus")
+#createBoxplots(ovisMappingStats, ovisMappingStats.sum, "Ovis aries")
+createBoxplots(susMappingStats, susMappingStats.sum, "Sus scrofa")
+```

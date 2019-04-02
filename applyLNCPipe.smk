@@ -23,7 +23,6 @@ rule all:
     input:
       # Prepare the data (download and index build)
       ####################################
-
       # The output from the SALMON part
       ####################################
         expand("%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]), samples=samples),
