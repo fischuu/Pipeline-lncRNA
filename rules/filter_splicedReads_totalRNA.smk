@@ -22,8 +22,8 @@ rule filter_splicedReads_totalRNA:
 
         if [ $totalPolyA == "total" ];
         then
-		./scripts/getSplicedBam.sh {input.bam} {output.outbam}		
+      		 ./scripts/getSplicedBam.sh {input.bam} {output.outbam}		
         else
-		touch {output.outbam}
-	fi
+		       touch {output.outbam}
+	      fi
     """
