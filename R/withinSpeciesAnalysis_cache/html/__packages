@@ -1,0 +1,9 @@
+base
+knitr
+clinfun
+Rcpp
+gMWT
+data.table
+GenomicTools.fileHandler
+GenomicTools
+fastqcr

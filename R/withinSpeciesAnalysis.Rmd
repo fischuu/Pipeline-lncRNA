@@ -1,7 +1,7 @@
 ---
 title: "Within species analysis"
 subtitle: ""
-author: "Daniel Fischer"
+author: "lncRNA group"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
@@ -33,6 +33,8 @@ equusFolder <- "/media/ejo138/Fantec6/Projects/FAANG-lncRNA/equus_caballus"
 gallusFolder <- "/media/ejo138/Fantec6/Projects/FAANG-lncRNA/gallus_gallus"
 ovisFolder <- "/media/ejo138/Fantec4/Projects/FAANG-lncRNA/ovis_aries"
 susFolder <- "/media/ejo138/Fantec6/Projects/FAANG-lncRNA/sus_scrofa"
+projFolder <- "/home/ejo138/gitPipelines/Pipeline-FAANG-lncRNA/"
+
 
 bosSamples <- as.vector(as.matrix(read.table(file.path(bosFolder, "samples"), stringsAsFactors = FALSE)))
 #capraSamples <- as.vector(as.matrix(read.table(file.path(bosFolder, "samples"), stringsAsFactors = FALSE)))
@@ -42,6 +44,9 @@ ovisSamples <- as.vector(as.matrix(read.table(file.path(bosFolder, "samples"), s
 susSamples <- as.vector(as.matrix(read.table(file.path(susFolder, "samples"), stringsAsFactors = FALSE)))
 
 species <- c("Bos T.", "Capra H.", "Equus C.", "Gallus G.", "Ovis A.", "Sus S.")
+samples <- read.table(file.path(projFolder,"2019.04.02-SamplesList.tsv"), sep="\t", stringsAsFactors=FALSE)
+samples[,2] <- tolower(samples[,2])
+samples[,3] <- tolower(samples[,3])
 ```
 
 # Basic statistics
@@ -119,8 +124,8 @@ bosMappingStats.sum <- sapply(sapply(bosMappingStats[[1]],"[",2),sum)
 #capraMappingStats <- getFCSummary(capraFolder)
 #capraMappingStats.sum <- sapply(sapply(capraMappingStats[[1]],"[",2),sum)
 
-#equusMappingStats <- getFCSummary(equusFolder)
-#equusMappingStats.sum <- sapply(sapply(equusMappingStats[[1]],"[",2),sum)
+equusMappingStats <- getFCSummary(equusFolder)
+equusMappingStats.sum <- sapply(sapply(equusMappingStats[[1]],"[",2),sum)
 
 #gallusMappingStats <- getFCSummary(gallusFolder)
 #gallusMappingStats.sum <- sapply(sapply(gallusMappingStats[[1]],"[",2),sum)
@@ -147,7 +152,7 @@ createBoxplots <- function(x1, x2, x3){
 
 createBoxplots(bosMappingStats, bosMappingStats.sum, "Bos taurus")
 #createBoxplots(capraMappingStats, capraMappingStats.sum, "Capra hircus")
-#createBoxplots(equusMappingStats, equusMappingStats.sum, "Equus caballus")
+createBoxplots(equusMappingStats, equusMappingStats.sum, "Equus caballus")
 #createBoxplots(gallusMappingStats, gallusMappingStats.sum, "Gallus gallus")
 #createBoxplots(ovisMappingStats, ovisMappingStats.sum, "Ovis aries")
 createBoxplots(susMappingStats, susMappingStats.sum, "Sus scrofa")
@@ -161,25 +166,14 @@ We first import the expression values we got from featureCounts for the stringme
 
 ```{r importExpressionValues}
 getExpressions <- function(dir){
-  fcFiles <- list.files(file.path(dir,"GTF", "Stringmerge_fc"), pattern="*.txt$", full.names=TRUE)
-  
-  sm.expressions <- fread(fcFiles[1])
-  colnames(sm.expressions)[7] <- gsub(".bam","",sapply(strsplit(colnames(sm.expressions)[7],"/"),"[",7))
-  sm.expressions[,c(2:5):=NULL]
-  
-  for(i in 2:length(fcFiles)){
-#  for(i in 2:10){    
-    tmp <- fread(fcFiles[i])
-    colnames(tmp)[7] <- gsub(".bam","",sapply(strsplit(colnames(tmp)[7],"/"),"[",7))
-    tmp[,c(2:6):=NULL]
-    
-    sm.expressions <- merge(sm.expressions, tmp, by="Geneid")
-  }
+  sm.expressions <- fread(file.path(dir, "GTF", "Stringmerge_fc.csv"))
+  colnames(sm.expressions) <- c(colnames(sm.expressions)[1:7],gsub(".bam", "", sapply(strsplit(colnames(sm.expressions)[-c(1:7)],".*/"),"[",2)))
+  tmp <- sm.expressions[,c(1:7):=NULL]
   sm.expressions
 }
 
 
-bosExpressions <- getExpressions(bosFolder)
+#bosExpressions <- getExpressions(bosFolder)
 #capraExpressions <- getExpressions(capraFolder)
 #equusExpressions <- getExpressions(equusFolder)
 #gallusExpressions <- getExpressions(gallusFolder)

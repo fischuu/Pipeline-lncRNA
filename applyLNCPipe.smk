@@ -36,8 +36,8 @@ rule all:
       ####################################
         expand("%s/%s/GTF/FEELnc_fc/lncRNA/{samples}_lncRNA_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
         expand("%s/%s/GTF/Ref_fc/{samples}_ref_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
-        expand("%s/%s/GTF/Stringmerge_fc/{samples}_stringmerge_fc.txt" % (config["project-folder"], config["species"]), samples=samples)
-
+        expand("%s/%s/GTF/Stringmerge_fc/{samples}_stringmerge_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
+        "%s/%s/GTF/Stringmerge_fc.txt" % (config["project-folder"], config["species"])
 ### setup report #####
 
 report: "report/workflow.rst"
@@ -50,13 +50,18 @@ report: "report/workflow.rst"
 #include: "rules/compose_samples_bash.smk"
 include: "rules/build_salmonIndex_salmon.smk"
 include: "rules/control_quality.smk"
+# RUN CUTADAPT
 include: "rules/mapping_salmon.smk"
 include: "rules/map_reads.smk"
+# FILTER READS WITH LESS THAN 1Mio mapped reads
 include: "rules/filter_splicedReads_totalRNA.smk"
 include: "rules/assemble_transcripts.smk"
 include: "rules/compose_merge.smk"
 include: "rules/merge_samples.smk"
 include: "rules/classify_lncrnas.smk"
 include: "rules/featureCounts_quantify_FEELnc_out.smk"
+# MERGE THE QUANTIFICATION
 include: "rules/featureCounts_quantify_reference.smk"
+# MERGE THE QUANTIFICATION
 include: "rules/featureCounts_quantify_stringmerge.smk"
+include: "rules/merge_fc_outpout_stringmerge.smk"
