@@ -19,6 +19,7 @@ output:
 ```{r setup, include=FALSE}
 library("knitr")
 library("GenomicTools")
+library("Luke")
 library("fastqcr")
 library("factoextra")
 library("Rtsne")
@@ -36,6 +37,7 @@ equusFolder <- "/media/ejo138/Fantec6/Projects/FAANG-lncRNA/equus_caballus"
 gallusFolder <- "/media/ejo138/Fantec6/Projects/FAANG-lncRNA/gallus_gallus"
 ovisFolder <- "/media/ejo138/Fantec4/Projects/FAANG-lncRNA/ovis_aries"
 susFolder <- "/media/ejo138/Fantec6/Projects/FAANG-lncRNA/sus_scrofa"
+mainFolder <- "/media/ejo138/Fantec6/Projects/FAANG-lncRNA/"
 projFolder <- "/home/ejo138/gitPipelines/Pipeline-FAANG-lncRNA/"
 
 
@@ -47,7 +49,7 @@ ovisSamples <- as.vector(as.matrix(read.table(file.path(bosFolder, "samples"), s
 susSamples <- as.vector(as.matrix(read.table(file.path(susFolder, "samples"), stringsAsFactors = FALSE)))
 
 species <- c("Bos T.", "Capra H.", "Equus C.", "Gallus G.", "Ovis A.", "Sus S.")
-samples <- read.table(file.path(projFolder,"2019.04.02-SamplesList.tsv"), sep="\t", stringsAsFactors=FALSE)
+samples <- read.table(file.path(projFolder,"2019.04.02-SamplesList.tsv"), sep="\t", stringsAsFactors=FALSE, header=TRUE)
 samples[,2] <- tolower(samples[,2])
 samples[,3] <- tolower(samples[,3])
 ```
@@ -57,6 +59,8 @@ Import the annotations
 ```{r}
 bosLNC <- importGTF(file.path(bosFolder,"FEELnc", "codpot", "feelnc_bos_taurus.codpot.lncRNA.gtf"), level="exon")
 bosLNCIDs <- unique(bosLNC$gene_id)
+bosAnnot <- importGTF(file.path(mainFolder,"annotations","bos_taurus","ARS-UCD1.2.95", "ARS-UCD1.2.95.gtf"), level="gene")
+bosMSTR2Annot <- read.table(file.path(mainFolder, "mstr2ens", "bos_taurus_MSTRG_ensembl.txt"), stringsAsFactors=FALSE)
 
 #capraLNC <- importGTF(file.path(capraFolder,"FEELnc", "codpot", "feelnc_capra_hircus.codpot.lncRNA.gtf"), level="exon")
 #capraLNCIDs <- unique(capraLNC$gene_id)
@@ -118,22 +122,30 @@ axis(1, at=1:6, label=species)
 
 ## STAR mapping statistics
 
-Import the STAR mapping statistics
+Import the STAR mapping statistics, Uniquely hits (black), multimapping (blue), too short (red)
 
 ```{r}
-plotSTAR <- function(dir, main){
+plotSTAR <- function(dir, main, boxplot=FALSE){
   starIn <- importSTARLog(file.path(dir, "BAM"))
   
   # Uniquely mapped reads
-  boxplot(as.numeric(gsub("%","",as.vector(as.matrix(starIn$finalLog$uniqueReads[13,-1])))), xlim=c(0.5,3.5), at=1, ylim=c(0,100), main=main)
+  uniqReads <- as.numeric(gsub("%","",as.vector(as.matrix(starIn$finalLog$uniqueReads[13,-1]))))
+  mmReads <- as.numeric(gsub("%","",as.vector(as.matrix(starIn$finalLog$multiMapping[1,-1]))))
+  tsReads <- as.numeric(gsub("%","",as.vector(as.matrix(starIn$finalLog$unmappedReads[3,-1]))))
   
-  boxplot(as.numeric(gsub("%","",as.vector(as.matrix(starIn$finalLog$multiMapping[1,-1])))), add=TRUE, at=2)
-  boxplot(as.numeric(gsub("%","",as.vector(as.matrix(starIn$finalLog$unmappedReads[3,-1])))), add=TRUE, at=3)
-  
-  axis(1, at=c(1:3), labels=c("Uniq.", "Multim.", "Too short") ,las=2)
+  if(boxplot){
+    boxplot(uniqReads, xlim=c(0.5,3.5), at=1, ylim=c(0,100), main=main)
+    boxplot(mmReads, add=TRUE, at=2)
+    boxplot(tsReads, add=TRUE, at=3)
+    axis(1, at=c(1:3), labels=c("Uniq.", "Multim.", "Too short") ,las=2)
+  } else {
+    reads <- rbind(uniqReads, mmReads, tsReads)    
+    barplot(reads, ylim=c(0,100), main=main, border=NA, space=0, col=c("black","blue","red"))
+  }
 }
+```
 
-par(mfrow=c(2,3))
+```{r barplotsSTAR}
 plotSTAR(bosFolder, "Bos taurus")
 #plotSTAR(capraFolder, "Capra hircus")
 plotSTAR(equusFolder, "Equus caballus")
@@ -142,7 +154,16 @@ plotSTAR(ovisFolder, "Ovis aries")
 #plotSTAR(susFolder, "Sus scrofa")
 ```
 
-## Feature Counts statistics statistics
+```{r boxplotsSTAR}
+plotSTAR(bosFolder, "Bos taurus", boxplot=TRUE)
+#plotSTAR(capraFolder, "Capra hircus", boxplot=TRUE)
+plotSTAR(equusFolder, "Equus caballus", boxplot=TRUE)
+plotSTAR(gallusFolder, "Gallus gallus", boxplot=TRUE)
+plotSTAR(ovisFolder, "Ovis aries", boxplot=TRUE)
+#plotSTAR(susFolder, "Sus scrofa", boxplot=TRUE)
+```
+
+## Feature Counts statistics
 
 Now some mapping and quantification statistics
 ```{r mappingStats}
@@ -170,43 +191,45 @@ getFCSummary <- function(dir){
 }
 
 bosMappingStats <- getFCSummary(bosFolder)
-bosMappingStats.sum <- sapply(sapply(bosMappingStats[[1]],"[",2),sum)
-
 #capraMappingStats <- getFCSummary(capraFolder)
-#capraMappingStats.sum <- sapply(sapply(capraMappingStats[[1]],"[",2),sum)
-
 equusMappingStats <- getFCSummary(equusFolder)
-equusMappingStats.sum <- sapply(sapply(equusMappingStats[[1]],"[",2),sum)
-
 #gallusMappingStats <- getFCSummary(gallusFolder)
-#gallusMappingStats.sum <- sapply(sapply(gallusMappingStats[[1]],"[",2),sum)
-
 #ovisMappingStats <- getFCSummary(ovisFolder)
-#ovisMappingStats.sum <- sapply(sapply(ovisMappingStats[[1]],"[",2),sum)
-
 susMappingStats <- getFCSummary(susFolder)
-susMappingStats.sum <- sapply(sapply(susMappingStats[[1]],"[",2),sum)
 ```
 
 And now visualize the percentages of the different mapping scenarios
 
 ```{r}
 par(mfrow=c(2,3))
-createBoxplots <- function(x1, x2, x3){
-  boxplot(x1[[2]]/x2, xlim=c(0.5,5.5), at=1, ylim=c(0,1), main=x3)
-  boxplot(x1[[3]]/x2, at=2, add=TRUE)
-  boxplot(x1[[4]]/x2, at=3, add=TRUE)
-  boxplot(x1[[5]]/x2, at=4, add=TRUE)
-  boxplot(x1[[6]]/x2, at=5, add=TRUE)
-  axis(1, at=1:5, labels=c("Annot.", "Unmapped", "Multim.", "Ambi.", "Unannot."))  
+createFCPlot <- function(x1, main, boxplots=TRUE){
+  x2 <- sapply(sapply(x1[[1]],"[",2),sum)
+  y1 <- x1[[2]]/x2
+  y2 <- x1[[3]]/x2
+  y3 <- x1[[4]]/x2
+  y4 <- x1[[5]]/x2
+  y5 <- x1[[6]]/x2
+  if(boxplots){
+    boxplot(y1, xlim=c(0.5,5.5), at=1, ylim=c(0,1), main=main)
+    boxplot(y2, at=2, add=TRUE)
+    boxplot(y3, at=3, add=TRUE)
+    boxplot(y4, at=4, add=TRUE)
+    boxplot(y5/x2, at=5, add=TRUE)
+    axis(1, at=1:5, labels=c("Annot.", "Unmapped", "Multim.", "Ambi.", "Unannot."))  
+  } else {
+    stats <- rbind(y1,y2,y3,y4,y5)
+    barplot(stats, ylim=c(0,5), main=main, border=NA, space=0,col=1:5)
+  }
 }
+```
 
-createBoxplots(bosMappingStats, bosMappingStats.sum, "Bos taurus")
-#createBoxplots(capraMappingStats, capraMappingStats.sum, "Capra hircus")
-createBoxplots(equusMappingStats, equusMappingStats.sum, "Equus caballus")
-#createBoxplots(gallusMappingStats, gallusMappingStats.sum, "Gallus gallus")
-#createBoxplots(ovisMappingStats, ovisMappingStats.sum, "Ovis aries")
-createBoxplots(susMappingStats, susMappingStats.sum, "Sus scrofa")
+```{r plotFCplots}
+createFCPlot(bosMappingStats, "Bos taurus")
+#createFCPlot(capraMappingStats, "Capra hircus")
+createFCPlot(equusMappingStats, "Equus caballus")
+#createFCPlot(gallusMappingStats, "Gallus gallus")
+#createFCPlot(ovisMappingStats, "Ovis aries")
+createFCPlot(susMappingStats, "Sus scrofa")
 ```
 
 # Expression analysis
@@ -216,7 +239,7 @@ createBoxplots(susMappingStats, susMappingStats.sum, "Sus scrofa")
 We first import the expression values we got from featureCounts for the stringmerge output
 
 ```{r importExpressionValues}
-getExpressions <- function(dir, lncRNA){
+getExpressions <- function(dir, lncRNA, annot=NULL, me){
   sm.expressions <- fread(file.path(dir, "GTF", "Stringmerge_fc.csv"))
   colnames(sm.expressions) <- c(colnames(sm.expressions)[1:6],gsub(".bam", "", sapply(strsplit(colnames(sm.expressions)[-c(1:6)],".*/"),"[",2)))
   RPK <- sm.expressions[,7:ncol(sm.expressions)]
@@ -226,16 +249,28 @@ getExpressions <- function(dir, lncRNA){
 
   FEELnc <- TPM[is.element(sm.expressions$Geneid,lncRNA),]
   
+  ENS.protein_coding <- NULL
+  ENS.lncRNA <- NULL
+  if(!is.null(annot)){
+    annot.pc <- annot$gene_id[annot$gene_biotype=="protein_coding"]
+    ENS.protein_coding <- TPM[is.element(sm.expressions$Geneid,annot.pc),]
+    annot.lnc <- annot$gene_id[annot$gene_biotype=="lncRNA"]
+    ENS.lncRNA <- TPM[is.element(sm.expressions$Geneid,annot.lnc),]
+  }
+  
   out <- list(counts = sm.expressions,
               TPM = TPM,
               RPK = RPK,
               FEELnc = FEELnc,
+              ENS.protein_coding = ENS.protein_coding,
+              ENS.lncRNA = ENS.lncRNA, 
               PMscaling = PMscaling)
   out
 }
+```
 
-
-bosExpressions <- getExpressions(bosFolder, bosLNCIDs)
+```{r createAnnots}
+bosExpressions <- getExpressions(bosFolder, bosLNCIDs, bosAnnot, me=bosMSTR2Annot)
 #capraExpressions <- getExpressions(capraFolder, capraLNCIDs)
 equusExpressions <- getExpressions(equusFolder, equusLNCIDs)
 #gallusExpressions <- getExpressions(gallusFolder, gallusLNCIDs)
@@ -272,7 +307,7 @@ plotPCA(susExpressions, "FEELnc", "Sus scrofa")
 Now try t-SNE
 
 ```{r tsne}
-plotTSNE <- function(x, data, main){
+plotTSNE <- function(x, data, main, colours){
     if(data == "TPM"){
     dataToUse <- x$TPM
   } else if(data == "FEELnc"){
@@ -281,20 +316,46 @@ plotTSNE <- function(x, data, main){
     stop("No such data!!!")
   }
 
+  newOrder <- c()
+  for(i in 1:ncol(dataToUse)){
+    newPos <- which(colours$run_accession==colnames(dataToUse)[i])
+    ifelse(length(newPos)>0, newOrder[i] <- newPos, newOrder[i] <- NA)
+  }
+  
+  coloursOrdered <- colours[newOrder,]
+  colourCodes <- as.numeric(as.factor(coloursOrdered$tissue.cell.line))
+
+  coloursToUse <- colourCodes %% 7 + 1
+  symbolToUse <- colourCodes %/% 7 + 1  
+  
+  forLegend <- data.frame(tissue=coloursOrdered$tissue.cell.line, 
+                          col=as.numeric(coloursToUse), 
+                          sym=as.numeric(symbolToUse))
+  
+  forLegend <- unique(forLegend)
+  
   set.seed(9)  
 
-  tsne_model_1 <-  Rtsne(as.matrix(t(dataToUse)), check_duplicates=FALSE, perplexity=10, pca=TRUE, theta=0.5, dims=2)
+  tsne_model_1 <-  Rtsne(as.matrix(t(dataToUse)), check_duplicates=FALSE, perplexity=10, pca=TRUE, theta=0, dims=2)
 
   ## getting the two dimension matrix
   d_tsne_1 <- as.data.frame(tsne_model_1$Y)  
 
-  plot(d_tsne_1, main=paste("t-SNE", data, main))
-}
+  par(mar=c(5.1, 4.1, 4.1, 10), xpd=TRUE)
 
-plotTSNE(bosExpressions, "FEELnc", "Bos taurus")
-#plotTSNE(capraExpressions, "FEELnc", "Capra hircus")
-plotTSNE(equusExpressions, "FEELnc", "Equus caballus")
-#plotTSNE(gallusExpressions, "FEELnc", "Gallus gallus")
-#plotTSNE(ovisExpressions, "FEELnc", "Ovis aries")
-plotTSNE(susExpressions, "FEELnc", "Sus scrofa")
+  plot(d_tsne_1, main=paste("t-SNE", data, main), col=coloursToUse, pch=symbolToUse)
+  
+  # Add legend to top right, outside plot region
+  legend("topright", inset=c(-0.7,0), legend=forLegend$tissue, col=forLegend$col, pch=forLegend$sym, title="Tissue")
+
+}
+```
+
+```{r plotTSNS}
+plotTSNE(x=bosExpressions, "FEELnc", "Bos taurus", colours=samples[samples$species=="cattle",])
+#plotTSNE(capraExpressions, "FEELnc", "Capra hircus", colours=samples[samples$species=="goat",])
+plotTSNE(equusExpressions, "FEELnc", "Equus caballus", colours=samples[samples$species=="horse",])
+#plotTSNE(gallusExpressions, "FEELnc", "Gallus gallus", colours=samples[samples$species=="chicken",])
+#plotTSNE(ovisExpressions, "FEELnc", "Ovis aries", colours=samples[samples$species=="sheep",])
+plotTSNE(susExpressions, "FEELnc", "Sus scrofa", colours=samples[samples$species=="pig",])
 ```
