@@ -20,6 +20,9 @@ output:
 library("knitr")
 library("GenomicTools")
 library("fastqcr")
+library("factoextra")
+library("Rtsne")
+library("ggplot2")
 options(scipen=999)
 knitr::opts_chunk$set(echo = FALSE,
                       cache = TRUE,
@@ -47,6 +50,28 @@ species <- c("Bos T.", "Capra H.", "Equus C.", "Gallus G.", "Ovis A.", "Sus S.")
 samples <- read.table(file.path(projFolder,"2019.04.02-SamplesList.tsv"), sep="\t", stringsAsFactors=FALSE)
 samples[,2] <- tolower(samples[,2])
 samples[,3] <- tolower(samples[,3])
+```
+
+Import the annotations
+
+```{r}
+bosLNC <- importGTF(file.path(bosFolder,"FEELnc", "codpot", "feelnc_bos_taurus.codpot.lncRNA.gtf"), level="exon")
+bosLNCIDs <- unique(bosLNC$gene_id)
+
+#capraLNC <- importGTF(file.path(capraFolder,"FEELnc", "codpot", "feelnc_capra_hircus.codpot.lncRNA.gtf"), level="exon")
+#capraLNCIDs <- unique(capraLNC$gene_id)
+
+equusLNC <- importGTF(file.path(equusFolder,"FEELnc", "codpot", "feelnc_equus_caballus.codpot.lncRNA.gtf"), level="exon")
+equusLNCIDs <- unique(equusLNC$gene_id)
+
+gallusLNC <- importGTF(file.path(gallusFolder,"FEELnc", "codpot", "feelnc_gallus_gallus.codpot.lncRNA.gtf"), level="exon")
+gallusLNCIDs <- unique(gallusLNC$gene_id)
+
+ovisLNC <- importGTF(file.path(ovisFolder,"FEELnc", "codpot", "feelnc_ovis_aries.codpot.lncRNA.gtf"), level="exon")
+ovisLNCIDs <- unique(ovisLNC$gene_id)
+
+susLNC <- importGTF(file.path(susFolder,"FEELnc", "codpot", "feelnc_sus_scrofa.codpot.lncRNA.gtf"), level="exon")
+susLNCIDs <- unique(susLNC$gene_id)
 ```
 
 # Basic statistics
@@ -91,7 +116,33 @@ boxplot(susRawReads, at=6, add=TRUE)
 axis(1, at=1:6, label=species)
 ```
 
-## Mapping statistics
+## STAR mapping statistics
+
+Import the STAR mapping statistics
+
+```{r}
+plotSTAR <- function(dir, main){
+  starIn <- importSTARLog(file.path(dir, "BAM"))
+  
+  # Uniquely mapped reads
+  boxplot(as.numeric(gsub("%","",as.vector(as.matrix(starIn$finalLog$uniqueReads[13,-1])))), xlim=c(0.5,3.5), at=1, ylim=c(0,100), main=main)
+  
+  boxplot(as.numeric(gsub("%","",as.vector(as.matrix(starIn$finalLog$multiMapping[1,-1])))), add=TRUE, at=2)
+  boxplot(as.numeric(gsub("%","",as.vector(as.matrix(starIn$finalLog$unmappedReads[3,-1])))), add=TRUE, at=3)
+  
+  axis(1, at=c(1:3), labels=c("Uniq.", "Multim.", "Too short") ,las=2)
+}
+
+par(mfrow=c(2,3))
+plotSTAR(bosFolder, "Bos taurus")
+#plotSTAR(capraFolder, "Capra hircus")
+plotSTAR(equusFolder, "Equus caballus")
+plotSTAR(gallusFolder, "Gallus gallus")
+plotSTAR(ovisFolder, "Ovis aries")
+#plotSTAR(susFolder, "Sus scrofa")
+```
+
+## Feature Counts statistics statistics
 
 Now some mapping and quantification statistics
 ```{r mappingStats}
@@ -165,18 +216,85 @@ createBoxplots(susMappingStats, susMappingStats.sum, "Sus scrofa")
 We first import the expression values we got from featureCounts for the stringmerge output
 
 ```{r importExpressionValues}
-getExpressions <- function(dir){
+getExpressions <- function(dir, lncRNA){
   sm.expressions <- fread(file.path(dir, "GTF", "Stringmerge_fc.csv"))
-  colnames(sm.expressions) <- c(colnames(sm.expressions)[1:7],gsub(".bam", "", sapply(strsplit(colnames(sm.expressions)[-c(1:7)],".*/"),"[",2)))
-  tmp <- sm.expressions[,c(1:7):=NULL]
-  sm.expressions
+  colnames(sm.expressions) <- c(colnames(sm.expressions)[1:6],gsub(".bam", "", sapply(strsplit(colnames(sm.expressions)[-c(1:6)],".*/"),"[",2)))
+  RPK <- sm.expressions[,7:ncol(sm.expressions)]
+  RPK <- RPK/(sm.expressions$Length/1000)
+  PMscaling <- apply(RPK,2,sum)/1000000
+  TPM <- t(t(RPK) /PMscaling)
+
+  FEELnc <- TPM[is.element(sm.expressions$Geneid,lncRNA),]
+  
+  out <- list(counts = sm.expressions,
+              TPM = TPM,
+              RPK = RPK,
+              FEELnc = FEELnc,
+              PMscaling = PMscaling)
+  out
 }
 
 
-#bosExpressions <- getExpressions(bosFolder)
-#capraExpressions <- getExpressions(capraFolder)
-#equusExpressions <- getExpressions(equusFolder)
-#gallusExpressions <- getExpressions(gallusFolder)
-#ovisExpressions <- getExpressions(ovisFolder)
-susExpressions <- getExpressions(susFolder)
+bosExpressions <- getExpressions(bosFolder, bosLNCIDs)
+#capraExpressions <- getExpressions(capraFolder, capraLNCIDs)
+equusExpressions <- getExpressions(equusFolder, equusLNCIDs)
+#gallusExpressions <- getExpressions(gallusFolder, gallusLNCIDs)
+#ovisExpressions <- getExpressions(ovisFolder, ovisLNCIDs)
+susExpressions <- getExpressions(susFolder, susLNCIDs)
+```
+
+## Principle Component Analysis
+
+```{r pca}
+plotPCA <- function(x, data, main){
+  if(data == "TPM"){
+    dataToUse <- x$TPM
+  } else if(data == "FEELnc"){
+    dataToUse <- x$FEELnc
+  } else {
+    stop("No such data!!!")
+  }
+  d.pca <- prcomp(dataToUse, center=TRUE, scale=TRUE)
+  
+  pairs(d.pca$x[,1:5], main=paste("PCA", data , main))
+}
+
+plotPCA(bosExpressions, "FEELnc", "Bos taurus")
+#plotPCA(capraExpressions, "FEELnc", "Capra hircus")
+plotPCA(equusExpressions, "FEELnc", "Equus caballus")
+#plotPCA(gallusExpressions, "FEELnc", "Gallus gallus")
+#plotPCA(ovisExpressions, "FEELnc", "Ovis aries")
+plotPCA(susExpressions, "FEELnc", "Sus scrofa")
+```
+
+## t-SNE
+
+Now try t-SNE
+
+```{r tsne}
+plotTSNE <- function(x, data, main){
+    if(data == "TPM"){
+    dataToUse <- x$TPM
+  } else if(data == "FEELnc"){
+    dataToUse <- x$FEELnc
+  } else {
+    stop("No such data!!!")
+  }
+
+  set.seed(9)  
+
+  tsne_model_1 <-  Rtsne(as.matrix(t(dataToUse)), check_duplicates=FALSE, perplexity=10, pca=TRUE, theta=0.5, dims=2)
+
+  ## getting the two dimension matrix
+  d_tsne_1 <- as.data.frame(tsne_model_1$Y)  
+
+  plot(d_tsne_1, main=paste("t-SNE", data, main))
+}
+
+plotTSNE(bosExpressions, "FEELnc", "Bos taurus")
+#plotTSNE(capraExpressions, "FEELnc", "Capra hircus")
+plotTSNE(equusExpressions, "FEELnc", "Equus caballus")
+#plotTSNE(gallusExpressions, "FEELnc", "Gallus gallus")
+#plotTSNE(ovisExpressions, "FEELnc", "Ovis aries")
+plotTSNE(susExpressions, "FEELnc", "Sus scrofa")
 ```

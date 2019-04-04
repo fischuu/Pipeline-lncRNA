@@ -7,7 +7,7 @@ rule merge_fc_outpout_stringmerge:
     input:
         directory("%s/%s/GTF/Stringmerge_fc/" % (config["project-folder"], config["species"]))
     output:
-        "%s/%s/GTF/Stringmerge_fc.txt" % (config["project-folder"], config["species"])
+        "%s/%s/GTF/Stringmerge_fc.csv" % (config["project-folder"], config["species"])
     log:
         "%s/%s/logs/merge_fc.log" % (config["project-folder"], config["species"])
     benchmark:
