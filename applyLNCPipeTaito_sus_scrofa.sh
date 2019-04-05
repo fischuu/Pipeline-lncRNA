@@ -6,7 +6,7 @@ module use $HOME/modulefiles
 module load anaconda3
 
 module load bioconda/3
-source activate RuminomicsPapillae
+source activate FAANGlncRNA
 
 snakemake -s applyLNCPipe.smk \
           -j 500 \
