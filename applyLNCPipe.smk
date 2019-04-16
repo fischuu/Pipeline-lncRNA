@@ -51,6 +51,7 @@ report: "report/workflow.rst"
 include: "rules/build_salmonIndex_salmon.smk"
 include: "rules/control_quality.smk"
 include: "rules/cutadapt_trim_reads.smk"
+include: "rules/remove_rRNA.smk"
 include: "rules/mapping_salmon.smk"
 include: "rules/map_reads.smk"
 # FILTER READS WITH LESS THAN 1Mio mapped reads
