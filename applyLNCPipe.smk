@@ -50,7 +50,7 @@ report: "report/workflow.rst"
 #include: "rules/compose_samples_bash.smk"
 include: "rules/build_salmonIndex_salmon.smk"
 include: "rules/control_quality.smk"
-# RUN CUTADAPT
+include: "rules/cutadapt_trim_reads.smk"
 include: "rules/mapping_salmon.smk"
 include: "rules/map_reads.smk"
 # FILTER READS WITH LESS THAN 1Mio mapped reads
