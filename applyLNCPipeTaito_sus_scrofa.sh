@@ -9,7 +9,7 @@ module load bioconda/3
 source activate FAANGlncRNA
 
 snakemake -s applyLNCPipe.smk \
-          -j 500 \
+          -j 500 -F \
           --latency-wait 60 \
           --configfile /proj/project_2000968/FAANG_lncRNA/pipeline/applyLNCPipe_config_taito_sus_scrofa.yaml \
           --cluster-config applyLNCPipe_taito.yaml \

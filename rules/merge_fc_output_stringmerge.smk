@@ -4,8 +4,8 @@ rule merge_fc_outpout_stringmerge:
     """
     Merge fc output (Panda).
     """
-    input:
-        directory("%s/%s/GTF/Stringmerge_fc/" % (config["project-folder"], config["species"]))
+    params:
+        smDir=directory("%s/%s/GTF/Stringmerge_fc/" % (config["project-folder"], config["species"]))
     output:
         "%s/%s/GTF/Stringmerge_fc.csv" % (config["project-folder"], config["species"])
     log:
@@ -13,5 +13,5 @@ rule merge_fc_outpout_stringmerge:
     benchmark:
         "%s/%s/benchmark/merge_fc.benchmark.tsv" % (config["project-folder"], config["species"])
     shell:"""
-        scripts/merge_fc.py -f {input} -o {output}
+        scripts/merge_fc.py -f {params.smDir} -o {output}
     """
