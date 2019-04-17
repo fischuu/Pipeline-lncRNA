@@ -2,10 +2,10 @@
 
 rule remove_rRNA:
     """
-    Split input fastq files into ribosomal and non-ribosomal reads.
+    Split input fastq files into ribosomal and non-ribosomal reads (BBmap).
     """
     input:
-        rRNA="/home/databases/Silva/Silva_119_1/Exports/SILVA_119_combined_silva_trunc.fasta.gz",
+        rRNA=config["params"]["bbmap"]["rRNA"],
         fastq1="%s/%s/FASTQ/{samples}_1.fastq.gz" % (config["project-folder"], config["species"]),
         fastq2="%s/%s/FASTQ/{samples}_2.fastq.gz" % (config["project-folder"], config["species"])
     output:
