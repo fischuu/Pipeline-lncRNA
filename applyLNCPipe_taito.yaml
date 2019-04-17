@@ -22,6 +22,11 @@ mapping_salmon:
     time: 03:00:00
     cpus-per-task: 12
     
+remove_rRNA:    
+    job-name: removeRRNA
+    time: 03:00:00
+    cpus-per-task: 1
+    
 quality_control_fastqc:
     job-name: fastqc
     time: 00:30:00

@@ -18,13 +18,11 @@ rule star_map:
         "%s/%s/benchmark/star_map.{samples}.benchmark.tsv" % (config["project-folder"], config["species"])
     threads: 16
     shell:"""
-        module load STAR;
-
-        mkdir {output.dir};
+        mkdir -p {output.dir};
 
         printf \"%s\t%s\t%s\t%s\t%s\t%s\n\" {input.index} {input.annotation} {input.fastq} {output} {log} {threads}
 
-	[ ! -d \"{output.dir}\" ] && mkdir {output.dir}
+      	[ ! -d \"{output.dir}\" ] && mkdir {output.dir}
 
         STAR --genomeDir {input.index} \
             --readFilesIn {input.fastq} \
