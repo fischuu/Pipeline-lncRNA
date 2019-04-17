@@ -11,6 +11,20 @@ samples: /proj/project_2000968/FAANG_lncRNA/ovis_aries/samples
 ref: /proj/project_2000968/FAANG_lncRNA/pipeline/species_resources.tsv
 
 params:
+  cutadapt:
+    # threshold used for quality trimming
+    phread_score: "30"
+    # path to file containing adapter sequence that might be ligated to 3' end of R1 reads
+    adapter_R1: "/proj/project_2000968/FAANG_lncRNA/references/TruSeq3-PE-2.fa"
+    # path to file containing adapter sequence that might be ligated to 3' end of R2 reads
+    adapter_R2: "/proj/project_2000968/FAANG_lncRNA/references/TruSeq3-PE-2.fa"
+    # reads shorter than this length are discarded
+    min_length: "20"
+    # if "any" then the pair is discarded if one of the reads meet the filtering criterium
+    pair_filter: "any"
+  bbmap:
+    # An rRNA provided by Christian as from the SILVA database
+    rRNA: "/proj/project_2000968/FAANG_lncRNA/references/SILVA_119_combined_silva_trunc.fasta.gz"
   fastqc: ""
   star: ""
   feelnc: ""
