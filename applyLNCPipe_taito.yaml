@@ -22,10 +22,15 @@ mapping_salmon:
     time: 03:00:00
     cpus-per-task: 12
     
+cutadapt_trim_reads:
+    job-name: cutadat
+    time: 03:00:00
+    cpus-per-task: 1
+    
 remove_rRNA:    
     job-name: removeRRNA
     time: 03:00:00
-    cpus-per-task: 1
+    cpus-per-task: 4
     
 quality_control_fastqc:
     job-name: fastqc

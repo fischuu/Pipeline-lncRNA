@@ -5,11 +5,12 @@ rule mapping_salmon:
     Map the reads (salmon).
     """
     input:
-        fastq1="%s/%s/FASTQ/{samples}_1.fastq.gz" % (config["project-folder"], config["species"]),
-        fastq2="%s/%s/FASTQ/{samples}_2.fastq.gz" % (config["project-folder"], config["species"]),
+        fastq1="%s/%s/BBDUK/{samples}_nonribo1.fastq.gz" % (config["project-folder"], config["species"]),
+	      fastq2="%s/%s/BBDUK/{samples}_nonribo2.fastq.gz" % (config["project-folder"], config["species"]),
         index="%s/salmon_index/hash.bin" % (references.loc[config["species"],"cdna"])
     output:
-        "%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]) 
+        "%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]),
+        salmonlogfile="%s/%s/SALMON/{samples}/logs/salmon_quant.log" % (config["project-folder"], config["species"])
     params:
         cdna=references.loc[config["species"],"cdna"],
         outdir="%s/%s/SALMON/{samples}" % (config["project-folder"], config["species"])
