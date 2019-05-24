@@ -1,4 +1,3 @@
-__default__:
     time: 00:30:00
     job-name:  mysnakemake
     ntasks: 1
@@ -11,45 +10,45 @@ downloadFASTQ_bash:
     job-name: dl_fastq
     time: 3-00:00:00
     cpus-per-task: 1
-    
+
 buildsalmonIndex_salmon:
     job-name: salmon
-    time: 03:00:00
+    time: 1-00:00:00
     cpus-per-task: 12
 
 mapping_salmon:
     job-name: salmon_quant
-    time: 03:00:00
+    time: 1-10:00:00
     cpus-per-task: 12
-    
+
 cutadapt_trim_reads:
     job-name: cutadat
-    time: 03:00:00
+    time: 1-10:00:00
     cpus-per-task: 1
-    
-remove_rRNA:    
+
+remove_rRNA:
     job-name: removeRRNA
-    time: 03:00:00
+    time: 1-10:00:00
     cpus-per-task: 4
-    
+
 quality_control_fastqc:
     job-name: fastqc
-    time: 00:30:00
+    time: 0-15:00:00
     cpus-per-task: 12
 
 star_map:
     job-name: star
-    time: 06:00:00
+    time: 1-20:00:00
     cpus-per-task: 12
 
 transcriptome_assembly_stringtie:
     job-name: stringtie
-    time: 06:00:00
+    time: 1-15:00:00
     cpus-per-task: 12
 
 merge_samples:
     job-name: stringmerge
-    time: 06:00:00
+    time: 1-15:00:00
     cpus-per-task: 12
 
 classify_ncrna_feelnc:
@@ -59,15 +58,15 @@ classify_ncrna_feelnc:
 
 featureCounts_quantify_reference:
     job-name: fc_Ref
-    time: 01:00:00
+    time: 05:00:00
     cpus-per-task: 12
 
 featureCounts_quantify_FEELnc_out:
     job-name: fc_Ref
-    time: 01:00:00
+    time: 05:00:00
     cpus-per-task: 12
 
 featureCounts_quantify_stringmerge:
     job-name: fc_Ref
-    time: 01:00:00
+    time: 05:00:00
     cpus-per-task: 12
