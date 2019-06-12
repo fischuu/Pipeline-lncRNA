@@ -29,6 +29,7 @@ cutadapt_trim_reads:
 remove_rRNA:
     job-name: removeRRNA
     time: 1-10:00:00
+    mem-per-cpu: 20000
     cpus-per-task: 4
 
 quality_control_fastqc:
