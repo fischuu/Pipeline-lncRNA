@@ -35,7 +35,12 @@ rule all:
       # Quantification 
       ####################################
         expand("%s/%s/cutadapt/{samples}_cutadapt_R1.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
-        expand("%s/%s/cutadapt/{samples}_cutadapt_R2.fastq.gz" % (config["project-folder"], config["species"]), samples=samples)
+        expand("%s/%s/cutadapt/{samples}_cutadapt_R2.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
+        expand("%s/%s/BBDUK/{samples}_ribo1.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
+        expand("%s/%s/BBDUK/{samples}_ribo2.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
+        expand("%s/%s/BBDUK/{samples}_nonribo1.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
+        expand("%s/%s/BBDUK/{samples}_nonribo2.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
+        expand("%s/%s/BBDUK/{samples}_stats.txt" % (config["project-folder"], config["species"]), samples=samples)
 #        expand("%s/%s/GTF/FEELnc_fc/lncRNA/{samples}_lncRNA_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
 #        expand("%s/%s/GTF/Ref_fc/{samples}_ref_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
 #        expand("%s/%s/GTF/Stringmerge_fc/{samples}_stringmerge_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
@@ -52,7 +57,7 @@ report: "report/workflow.rst"
 ###include: "rules/compose_samples_bash.smk"
 include: "rules/control_quality.smk"
 include: "rules/cutadapt_trim_reads.smk"
-#include: "rules/remove_rRNA.smk"
+include: "rules/remove_rRNA.smk"
 #include: "rules/build_salmonIndex_salmon.smk"
 #include: "rules/mapping_salmon.smk"
 #include: "rules/map_reads.smk"

@@ -1,3 +1,4 @@
+__default__:
     time: 00:30:00
     job-name:  mysnakemake
     ntasks: 1
@@ -29,8 +30,8 @@ cutadapt_trim_reads:
 remove_rRNA:
     job-name: removeRRNA
     time: 1-10:00:00
-    mem-per-cpu: 20000
-    cpus-per-task: 4
+    mem-per-cpu: 15000
+    cpus-per-task: 8
 
 quality_control_fastqc:
     job-name: fastqc

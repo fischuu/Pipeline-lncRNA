@@ -20,7 +20,7 @@ rule remove_rRNA:
         "%s/%s/logs/remove_rRNA.{samples}.log" % (config["project-folder"], config["species"])
     benchmark:
         "%s/%s/benchmark/remove_rRNA.{samples}.benchmark.tsv" % (config["project-folder"], config["species"])
-    threads: 4
+    threads: 8
     shell:"""
         printf \"%s\t%s\t%s\t%s\t%s\t%s\n\" {input.rRNA} {input.fastq1} {input.fastq2} {output} {log} {threads}
 
