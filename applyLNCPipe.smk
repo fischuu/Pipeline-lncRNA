@@ -40,7 +40,11 @@ rule all:
         expand("%s/%s/BBDUK/{samples}_ribo2.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
         expand("%s/%s/BBDUK/{samples}_nonribo1.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
         expand("%s/%s/BBDUK/{samples}_nonribo2.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
-        expand("%s/%s/BBDUK/{samples}_stats.txt" % (config["project-folder"], config["species"]), samples=samples)
+        expand("%s/%s/BBDUK/{samples}_stats.txt" % (config["project-folder"], config["species"]), samples=samples),
+        expand("%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]), samples=samples),
+        expand("%s/%s/SALMON/{samples}/logs/salmon_quant.log" % (config["project-folder"], config["species"]), samples=samples),
+        expand("%s/%s/BAM/{samples}.bam" % (config["project-folder"], config["species"]), samples=samples),
+        expand(directory("%s/%s/BAM/{samples}" % (config["project-folder"], config["species"])), samples=samples)
 #        expand("%s/%s/GTF/FEELnc_fc/lncRNA/{samples}_lncRNA_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
 #        expand("%s/%s/GTF/Ref_fc/{samples}_ref_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
 #        expand("%s/%s/GTF/Stringmerge_fc/{samples}_stringmerge_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
@@ -59,8 +63,8 @@ include: "rules/control_quality.smk"
 include: "rules/cutadapt_trim_reads.smk"
 include: "rules/remove_rRNA.smk"
 include: "rules/build_salmonIndex_salmon.smk"
-#include: "rules/mapping_salmon.smk"
-#include: "rules/map_reads.smk"
+include: "rules/mapping_salmon.smk"
+include: "rules/map_reads.smk"
 ### FILTER READS WITH LESS THAN 1Mio mapped reads
 #include: "rules/filter_splicedReads_totalRNA.smk"
 #include: "rules/assemble_transcripts.smk"
