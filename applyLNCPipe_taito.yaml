@@ -45,7 +45,7 @@ star_map:
 
 filter_splicedReads_totalRNA:
     job-name: filterSpliced
-    time: 02:00:00
+    time: 05:00:00
     cpus-per-task: 1
     
 transcriptome_assembly_stringtie:
