@@ -9,11 +9,11 @@ rule remove_rRNA:
         fastq1="%s/%s/cutadapt/{samples}_cutadapt_R1.fastq.gz" % (config["project-folder"], config["species"]),
         fastq2="%s/%s/cutadapt/{samples}_cutadapt_R2.fastq.gz" % (config["project-folder"], config["species"])
     output:
-        ribo1="%s/%s/BBDUK/{samples}_ribo1.fastq.gz" % (config["project-folder"], config["species"]),
-        ribo2="%s/%s/BBDUK/{samples}_ribo2.fastq.gz" % (config["project-folder"], config["species"]),
-        nonribo1="%s/%s/BBDUK/{samples}_nonribo1.fastq.gz" % (config["project-folder"], config["species"]),
-        nonribo2="%s/%s/BBDUK/{samples}_nonribo2.fastq.gz" % (config["project-folder"], config["species"]),
-        stats="%s/%s/BBDUK/{samples}_stats.txt" % (config["project-folder"], config["species"])
+        ribo1=temp("%s/%s/BBDUK/{samples}_ribo1.fastq.gz" % (config["project-folder"], config["species"])),
+        ribo2=temp("%s/%s/BBDUK/{samples}_ribo2.fastq.gz" % (config["project-folder"], config["species"])),
+        nonribo1=temp("%s/%s/BBDUK/{samples}_nonribo1.fastq.gz" % (config["project-folder"], config["species"])),
+        nonribo2=temp("%s/%s/BBDUK/{samples}_nonribo2.fastq.gz" % (config["project-folder"], config["species"])),
+        stats=temp("%s/%s/BBDUK/{samples}_stats.txt" % (config["project-folder"], config["species"]))
     params:
         dir=directory("%s/%s/BBDUK" % (config["project-folder"], config["species"]))
     log:
