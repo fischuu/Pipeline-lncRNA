@@ -66,7 +66,7 @@ include: "rules/assemble_transcripts.smk"
 include: "rules/compose_merge.smk"
 include: "rules/merge_samples.smk"
 include: "rules/classify_lncrnas.smk"
-#include: "rules/featureCounts_quantify_FEELnc_out.smk"
+include: "rules/featureCounts_quantify_FEELnc_out.smk"
 ### MERGE THE QUANTIFICATION
 #include: "rules/featureCounts_quantify_reference.smk"
 ### MERGE THE QUANTIFICATION
