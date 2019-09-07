@@ -35,7 +35,7 @@ rule transcriptome_assembly_stringtie:
         	elif [ $lib_type == \"ISF\" ];
         	then
 	        	stringtie {input.bam} -p {threads} --fr -G {input.annotation} -v -o {output} 2> {log};
-        	elif [ $lib_type == \"IU\" ];
+        	elif [ $lib_type == \"IU\" ] ||  [ $lib_type == \"MU\" ];
         	then
 	        	stringtie {input.bam} -p {threads} -G {input.annotation} -v -o {output} 2> {log};
        		fi
@@ -49,7 +49,7 @@ rule transcriptome_assembly_stringtie:
         	elif [ $lib_type == \"ISF\" ];
        		then
                 	stringtie {input.splicedbam} -p {threads} --fr -G {input.annotation} -v -o {output} 2> {log};
-        	elif [ $lib_type == \"IU\" ];
+        	elif [ $lib_type == \"IU\" ] ||  [ $lib_type == \"MU\" ];
         	then
                 	stringtie {input.splicedbam} -p {threads} -G {input.annotation} -v -o {output} 2> {log};
         	fi
