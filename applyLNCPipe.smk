@@ -39,8 +39,8 @@ rule all:
         expand("%s/%s/BAM/{samples}.bam" % (config["project-folder"], config["species"]), samples=samples),
         expand(directory("%s/%s/BAM/{samples}" % (config["project-folder"], config["species"])), samples=samples),
         expand("%s/%s/BAM/{samples}_spliced.bam" % (config["project-folder"], config["species"]), samples=samples),
-#        "%s/%s/GTF_merged/merged_STRG.gtf" % (config["project-folder"], config["species"])
-#        expand("%s/%s/GTF/FEELnc_fc/lncRNA/{samples}_lncRNA_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
+        "%s/%s/GTF_merged/merged_STRG.gtf" % (config["project-folder"], config["species"])
+        expand("%s/%s/GTF/FEELnc_fc/lncRNA/{samples}_lncRNA_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
 #        expand("%s/%s/GTF/Ref_fc/{samples}_ref_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
 #        expand("%s/%s/GTF/Stringmerge_fc/{samples}_stringmerge_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
 #        "%s/%s/GTF/Stringmerge_fc.csv" % (config["project-folder"], config["species"])
@@ -62,10 +62,10 @@ include: "rules/mapping_salmon.smk"
 include: "rules/map_reads.smk"
 ### FILTER READS WITH LESS THAN 1Mio mapped reads
 include: "rules/filter_splicedReads_totalRNA.smk"
-#include: "rules/assemble_transcripts.smk"
-#include: "rules/compose_merge.smk"
-#include: "rules/merge_samples.smk"
-#include: "rules/classify_lncrnas.smk"
+include: "rules/assemble_transcripts.smk"
+include: "rules/compose_merge.smk"
+include: "rules/merge_samples.smk"
+include: "rules/classify_lncrnas.smk"
 #include: "rules/featureCounts_quantify_FEELnc_out.smk"
 ### MERGE THE QUANTIFICATION
 #include: "rules/featureCounts_quantify_reference.smk"
