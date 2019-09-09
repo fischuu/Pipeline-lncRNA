@@ -77,3 +77,8 @@ featureCounts_quantify_stringmerge:
     job-name: fc_Ref
     time: 05:00:00
     cpus-per-task: 12
+
+merge_fc_output_stringmerge:
+    job-name: merge_fc_st
+    time: 05:00:00
+    cpus-per-task: 4

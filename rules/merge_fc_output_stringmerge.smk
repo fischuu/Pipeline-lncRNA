@@ -1,6 +1,6 @@
 # vim: set filetype=sh :
 
-rule merge_fc_outpout_stringmerge:
+rule merge_fc_output_stringmerge:
     """
     Merge fc output (Panda).
     """
