@@ -9,4 +9,5 @@ conda install -n FAANGlncRNA feelnc=0.1.1
 conda install -n FAANGlncRNA subread=1.6.3
 conda install -n FAANGlncRNA samtools=1.9
 conda install -n FAANGlncRNA bbmap=38.22
-conda install -c bioconda -n FAANGlncRNA openssl=1.0 
+conda install -n FAANGlncRNA pandas=0.25.1
+conda install -c bioconda -n FAANGlncRNA openssl=1.0  
