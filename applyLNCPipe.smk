@@ -21,29 +21,17 @@ references = pd.read_table(config["ref"], delimiter='\s+', lineterminator='\n').
 
 rule all:
     input:
-      # Prepare the data (download and index build)
-      ####################################
-      # The output from the SALMON part
-      ####################################
-#        expand("%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]), samples=samples),
-      # The output from the FEELnc part
-      ####################################
-#        "%s/%s/FEELnc/classifier/feelnc_%s.classifier.txt" % (config["project-folder"], config["species"], config["species"]),
-      # The quality checks
-      ####################################
         expand("%s/%s/FASTQC/{samples}" % (config["project-folder"], config["species"]), samples=samples),
-      # Quantification 
-      ####################################
         expand("%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]), samples=samples),
         expand("%s/%s/SALMON/{samples}/logs/salmon_quant.log" % (config["project-folder"], config["species"]), samples=samples),
-        expand("%s/%s/BAM/{samples}.bam" % (config["project-folder"], config["species"]), samples=samples),
-        expand(directory("%s/%s/BAM/{samples}" % (config["project-folder"], config["species"])), samples=samples),
-        expand("%s/%s/BAM/{samples}_spliced.bam" % (config["project-folder"], config["species"]), samples=samples),
-        "%s/%s/GTF_merged/merged_STRG.gtf" % (config["project-folder"], config["species"]),
-        expand("%s/%s/GTF/FEELnc_fc/lncRNA/{samples}_lncRNA_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
-        expand("%s/%s/GTF/Ref_fc/{samples}_ref_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
-        expand("%s/%s/GTF/Stringmerge_fc/{samples}_stringmerge_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
-        "%s/%s/GTF/Stringmerge_fc.csv" % (config["project-folder"], config["species"])
+#        expand("%s/%s/BAM/{samples}.bam" % (config["project-folder"], config["species"]), samples=samples),
+#        expand(directory("%s/%s/BAM/{samples}" % (config["project-folder"], config["species"])), samples=samples),
+#        expand("%s/%s/BAM/{samples}_spliced.bam" % (config["project-folder"], config["species"]), samples=samples),
+#        "%s/%s/GTF_merged/merged_STRG.gtf" % (config["project-folder"], config["species"]),
+#        expand("%s/%s/GTF/FEELnc_fc/lncRNA/{samples}_lncRNA_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
+#        expand("%s/%s/GTF/Ref_fc/{samples}_ref_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
+#        expand("%s/%s/GTF/Stringmerge_fc/{samples}_stringmerge_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
+#        "%s/%s/GTF/Stringmerge_fc.csv" % (config["project-folder"], config["species"])
 ### setup report #####
 
 report: "report/workflow.rst"
