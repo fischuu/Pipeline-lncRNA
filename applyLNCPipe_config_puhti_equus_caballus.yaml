@@ -1,0 +1,34 @@
+# absolute path to the project folder
+project-folder: /scratch/project_2001289/FAANG_lncRNA
+
+# species name
+species: equus_caballus
+
+# absolute path to sample sheet (list of sample identifiers)
+samples: /scratch/project_2001289/FAANG_lncRNA/equus_caballus/samples
+
+# absolute path to list of reference files (header of tsv: species, genome, index, annot)
+ref: /scratch/project_2001289/FAANG_lncRNA/FAANG_lncRNA/pipeline/species_resources.tsv
+
+params:
+  cutadapt:
+    # threshold used for quality trimming
+    phread_score: "30"
+    # path to file containing adapter sequence that might be ligated to 3' end of R1 reads
+    adapter_R1: "/scratch/project_2001289/FAANG_lncRNA/FAANG_lncRNA/references/TruSeq3-PE-2.fa"
+    # path to file containing adapter sequence that might be ligated to 3' end of R2 reads
+    adapter_R2: "/scratch/project_2001289/FAANG_lncRNA/FAANG_lncRNA/references/TruSeq3-PE-2.fa"
+    # reads shorter than this length are discarded
+    min_length: "20"
+    # if "any" then the pair is discarded if one of the reads meet the filtering criterium
+    pair_filter: "any"
+  bbmap:
+    # An rRNA provided by Christian as from the SILVA database
+    rRNA: "/scratch/project_2001289/FAANG_lncRNA/FAANG_lncRNA/references/SILVA_119_combined_silva_trunc.fasta.gz"
+  fastqc: ""
+  star: ""
+  feelnc: ""
+  stringtie:
+    # Define here the tpm threshold for the merging step
+    tpm: "1"
+  rsem: ""
