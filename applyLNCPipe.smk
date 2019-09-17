@@ -21,9 +21,13 @@ references = pd.read_table(config["ref"], delimiter='\s+', lineterminator='\n').
 
 rule all:
     input:
+      # FastQC rule:
         expand("%s/%s/FASTQC/{samples}" % (config["project-folder"], config["species"]), samples=samples),
-        expand("%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]), samples=samples),
-        expand("%s/%s/SALMON/{samples}/logs/salmon_quant.log" % (config["project-folder"], config["species"]), samples=samples),
+      # cutadapt-rule (can be changed to temp, once we know about the proper timings):
+        expand("%s/%s/cutadapt/{samples}_cutadapt_R1.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
+        expand("%s/%s/cutadapt/{samples}_cutadapt_R2.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
+#        expand("%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]), samples=samples),
+#        expand("%s/%s/SALMON/{samples}/logs/salmon_quant.log" % (config["project-folder"], config["species"]), samples=samples),
 #        expand("%s/%s/BAM/{samples}.bam" % (config["project-folder"], config["species"]), samples=samples),
 #        expand(directory("%s/%s/BAM/{samples}" % (config["project-folder"], config["species"])), samples=samples),
 #        expand("%s/%s/BAM/{samples}_spliced.bam" % (config["project-folder"], config["species"]), samples=samples),

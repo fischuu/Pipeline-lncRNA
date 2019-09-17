@@ -8,8 +8,8 @@ rule cutadapt_trim_reads:
         ["%s/%s/FASTQ/{samples}_1.fastq.gz" % (config["project-folder"], config["species"]),
          "%s/%s/FASTQ/{samples}_2.fastq.gz" % (config["project-folder"], config["species"])]
     output:
-        first=temp("%s/%s/cutadapt/{samples}_cutadapt_R1.fastq.gz" % (config["project-folder"], config["species"])),
-        second=temp("%s/%s/cutadapt/{samples}_cutadapt_R2.fastq.gz" % (config["project-folder"], config["species"]))
+        first="%s/%s/cutadapt/{samples}_cutadapt_R1.fastq.gz" % (config["project-folder"], config["species"]),
+        second="%s/%s/cutadapt/{samples}_cutadapt_R2.fastq.gz" % (config["project-folder"], config["species"])
     params:
         phread_score=config["params"]["cutadapt"]["phread_score"],
         adapter_file_R1=config["params"]["cutadapt"]["adapter_R1"],
