@@ -2,6 +2,9 @@
 #
 #$1 is target file
 
+csc-workspaces set project_2001289
+source $HOME/.bashrc
+
 module load bioconda/3
 source activate FAANGlncRNA
 
