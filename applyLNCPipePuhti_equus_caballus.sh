@@ -6,7 +6,7 @@
 #source $HOME/.bashrc
 
 module load bioconda/3
-source activate /projappl/project_2001289/exFAANGlncRNA
+source activate /projappl/project_2001289/FAANGlncRNA
 
 snakemake -s applyLNCPipe.smk \
           -j 500 \
