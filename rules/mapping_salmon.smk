@@ -20,7 +20,5 @@ rule mapping_salmon:
         "%s/%s/benchmark/salmonMapping_{samples}.benchmark.tsv" % (config["project-folder"], config["species"])
     threads: 16
     shell:"""
-        module load salmon/0.12.0
-
         salmon quant -i {params.cdna}/salmon_index -p {threads} -l A -1 {input.fastq1} -2 {input.fastq2} -o {params.outdir} 2> {log};
     """

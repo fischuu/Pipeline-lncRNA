@@ -2,11 +2,11 @@
 #
 #$1 is target file
 
-csc-workspaces set project_2001289
-source $HOME/.bashrc
+#csc-workspaces set project_2001289
+#source $HOME/.bashrc
 
 module load bioconda/3
-source activate FAANGlncRNA
+source activate /projappl/project_2001289/FAANGlncRNA
 
 snakemake -s applyLNCPipe.smk \
           -j 500 \

@@ -17,8 +17,5 @@ rule merge_samples:
         "%s/%s/benchmark/stringtiemerge.benchmark.tsv" % (config["project-folder"], config["species"])
     threads: 16
     shell:"""
-        module use $HOME/modulefiles
-        module load stringtie/1.3.4d
-
         stringtie --merge -G {input.annotation} -F 0 -T {params.tpm} -o {output} {input.gtfs} 2> {log};
     """

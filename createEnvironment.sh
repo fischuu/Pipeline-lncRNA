@@ -10,4 +10,5 @@ conda install -n FAANGlncRNA subread=1.6.3
 conda install -n FAANGlncRNA samtools=1.9
 conda install -n FAANGlncRNA bbmap=38.22
 conda install -n FAANGlncRNA pandas=0.25.1
+conda install -c bioconda -n FAANGlncRNA salmon=0.12.0
 conda install -c bioconda -n FAANGlncRNA openssl=1.0  

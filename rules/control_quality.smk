@@ -17,10 +17,7 @@ rule quality_control_fastqc:
         "%s/%s/benchmark/fastqc.{samples}.benchmark.tsv" % (config["project-folder"], config["species"])
     threads: 16
     shell:"""
-        module load FastQC;
-
         mkdir -p {output.dir}
 
         fastqc -t 16 --outdir {output} --extract {input} 2> {log};
-
     """
