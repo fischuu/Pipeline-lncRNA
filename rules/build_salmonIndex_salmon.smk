@@ -16,7 +16,5 @@ rule buildsalmonIndex_salmon:
         "%s/%s/benchmark/salmon.benchmark.tsv" % (config["project-folder"], config["species"])
     threads: 16
     shell:"""
-        module load salmon/0.12.0
-        
         scripts/prepareSalmonIndex.sh {params.species} {params.cdna}
     """
