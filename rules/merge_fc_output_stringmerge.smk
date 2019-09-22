@@ -15,5 +15,5 @@ rule merge_fc_output_stringmerge:
     params:
         smDir=directory("%s/%s/GTF/Stringmerge_fc/" % (config["project-folder"], config["species"]))
     shell:"""
-        scripts/merge_fc.py -f {params.smDir} -o {output}
+        scripts/merge_fc.py -f {params.smDir} -o {output} &> {log}
     """
