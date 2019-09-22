@@ -21,5 +21,5 @@ rule classify_ncrna_feelnc:
         "%s/%s/benchmark/feelnc.benchmark.tsv" % (config["project-folder"], config["species"])
     threads: 16
     shell:"""
-        scripts/run_feelnc.sh {input.candidates} {input.annotation} {input.genome} {params.dir} {params.name}
+        scripts/run_feelnc.sh {input.candidates} {input.annotation} {input.genome} {params.dir} {params.name} &> {log}
     """
