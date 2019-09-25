@@ -69,7 +69,7 @@ if [ ! -f $OUTPUTFOLDER/codpot/$afterCodpot ]; then
                             --genome=$GENOME \
                             -b transcript_biotype=protein_coding \
                             --mode=shuffle \
-                            --keeptmp=TRUE \
+                            --keeptmp \
                             --outname=$afterCodpot \
                             --outdir=$OUTPUTFOLDER/codpot/
   echo "... done!"
