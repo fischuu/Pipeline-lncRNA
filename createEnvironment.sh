@@ -6,6 +6,7 @@ conda install -n FAANGlncRNA multiqc=1.7
 conda install -n FAANGlncRNA cutadapt=1.18
 conda install -n FAANGlncRNA stringtie=1.3.4
 conda install -n FAANGlncRNA feelnc=0.1.1
+conda install -n FAANGlncRNA libiconv=1.15
 conda install -n FAANGlncRNA subread=1.6.3
 conda install -n FAANGlncRNA samtools=1.9
 conda install -n FAANGlncRNA bbmap=38.22
