@@ -5,9 +5,11 @@ rule compose_merge:
     collect gtf files of all samples in one text file
     """
     input:
-       expand("%s/%s/Stringtie/{sample}.stringtie.gtf" % (config["project-folder"], config["species"]), sample=samples)
+       files=expand("%s/%s/Stringtie/{sample}.stringtie.gtf" % (config["project-folder"], config["species"]), sample=samples),
+       folder="%s/%s/Stringtie/" % (config["project-folder"], config["species"])
     output:
        txt="%s/%s/Stringtie/stringtie_gtfs.txt" % (config["project-folder"], config["species"])
-    run:
-        with open(output.txt, 'w') as out:
-            print(*input, sep="\n", file=out)
+    shell:"""
+       scripts/composeMerge.sh {input.folder} {output.txt}
+    """
+
