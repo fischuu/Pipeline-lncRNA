@@ -61,7 +61,8 @@ merge_samples:
 
 classify_ncrna_feelnc:
     job-name: feelnc
-    time: 3-00:00:00
+    partition: longrun
+    time: 7-00:00:00
     cpus-per-task: 12
 
 featureCounts_quantify_reference:
