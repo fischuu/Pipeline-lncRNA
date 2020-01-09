@@ -62,7 +62,7 @@ merge_samples:
 classify_ncrna_feelnc:
     job-name: feelnc
     partition: longrun
-    time: 7-00:00:00
+    time: 12-00:00:00
     cpus-per-task: 12
 
 classify_ncrna_feelnc_01_filter:
