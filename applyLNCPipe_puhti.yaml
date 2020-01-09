@@ -65,6 +65,24 @@ classify_ncrna_feelnc:
     time: 7-00:00:00
     cpus-per-task: 12
 
+classify_ncrna_feelnc_01_filter:
+    job-name: feelnc01
+    partition: small
+    time: 3-00:00:00
+    cpus-per-task: 12
+
+classify_ncrna_feelnc_02_codingpot:
+    job-name: feelnc02
+    partition: small
+    time: 3-00:00:00
+    cpus-per-task: 12
+    
+classify_ncrna_feelnc_03_classifier:
+    job-name: feelnc03
+    partition: small
+    time: 3-00:00:00
+    cpus-per-task: 12
+
 featureCounts_quantify_reference:
     job-name: fc_Ref
     time: 05:00:00
