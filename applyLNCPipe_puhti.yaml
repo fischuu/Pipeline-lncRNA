@@ -79,9 +79,9 @@ classify_ncrna_feelnc_02_codingpot:
     
 classify_ncrna_feelnc_03_classifier:
     job-name: feelnc03
-    partition: small
-    time: 3-00:00:00
-    cpus-per-task: 12
+    partition: longrun
+    time: 14-00:00:00
+    cpus-per-task: 20
 
 featureCounts_quantify_reference:
     job-name: fc_Ref
