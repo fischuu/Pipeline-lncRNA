@@ -35,3 +35,5 @@ snakemake -s applyLNCPipe.smk --dag | dot -Tpdf > dag.pdf
 
 * create the report
 snakemake -s applyLNCPipe.smk --report report.html
+
+* Create the samples file with find or ls > samples
