@@ -24,13 +24,13 @@ rule all:
       # FastQC rule:
         expand("%s/%s/FASTQC/{samples}" % (config["project-folder"], config["species"]), samples=samples),
       # cutadapt-rule (can be changed to temp, once we know about the proper timings):
-        expand("%s/%s/cutadapt/{samples}_cutadapt_R1.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
-        expand("%s/%s/cutadapt/{samples}_cutadapt_R2.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
-        expand("%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]), samples=samples),
-        expand("%s/%s/SALMON/{samples}/logs/salmon_quant.log" % (config["project-folder"], config["species"]), samples=samples),
+#        expand("%s/%s/cutadapt/{samples}_cutadapt_R1.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
+#        expand("%s/%s/cutadapt/{samples}_cutadapt_R2.fastq.gz" % (config["project-folder"], config["species"]), samples=samples),
+#        expand("%s/%s/SALMON/{samples}/lib_format_counts.json" % (config["project-folder"], config["species"]), samples=samples),
+#        expand("%s/%s/SALMON/{samples}/logs/salmon_quant.log" % (config["project-folder"], config["species"]), samples=samples),
         expand("%s/%s/BAM/{samples}.bam" % (config["project-folder"], config["species"]), samples=samples),
 #        expand(directory("%s/%s/BAM/{samples}" % (config["project-folder"], config["species"])), samples=samples),
-        expand("%s/%s/BAM/{samples}_spliced.bam" % (config["project-folder"], config["species"]), samples=samples),
+#        expand("%s/%s/BAM/{samples}_spliced.bam" % (config["project-folder"], config["species"]), samples=samples),
         "%s/%s/GTF_merged/merged_STRG.gtf" % (config["project-folder"], config["species"]),
         "%s/%s/FEELnc/classifier/feelnc_%s.classifier.txt" % (config["project-folder"], config["species"], config["species"]),
         expand("%s/%s/GTF/FEELnc_fc/lncRNA/{samples}_lncRNA_fc.txt" % (config["project-folder"], config["species"]), samples=samples),
