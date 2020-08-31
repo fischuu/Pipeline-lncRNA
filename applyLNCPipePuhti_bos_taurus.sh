@@ -6,7 +6,7 @@ module load bioconda/3
 source activate /projappl/project_2001289/FAANGlncRNA
 
 snakemake -s applyLNCPipe.smk \
-          -j 500 \
+          -j 300 \
           --latency-wait 60 \
           --configfile /scratch/project_2001289/FAANG_lncRNA/pipeline/applyLNCPipe_config_puhti_bos_taurus.yaml \
           --cluster-config applyLNCPipe_puhti.yaml \
